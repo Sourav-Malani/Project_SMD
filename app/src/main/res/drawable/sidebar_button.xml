@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="300dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60"
+    android:fillColor="#DADADA">
+
+        <group
+            android:id="@+id/Rectangle_105">
+
+            <path
+                android:pathData="M41,10H27C20.3726,10,15,15.3726,15,22V36C15,42.6274,20.3726,48,27,48H41C47.6274,48,53,42.6274,53,36V22C53,15.3726,47.6274,10,41,10z"
+                android:fillColor="#FFFFFF" />
+
+            <path
+                android:pathData="M28,26H40"
+                android:strokeColor="#111719"
+                android:strokeWidth="2"
+                android:strokeLineCap="round" />
+
+            <path
+                android:pathData="M28,32H36"
+                android:strokeColor="#111719"
+                android:strokeWidth="2"
+                android:strokeLineCap="round" />
+        </group>
+
+
+</vector>
