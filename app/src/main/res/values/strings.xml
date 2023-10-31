@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SMD_Project</string>
+    <string name="food">
+      CheeSy
+    </string>
+    <string name="welcome_to_1">
+      Welcome to\n
+    </string>
+    <string name="welcome_to_2">
+      CheesyBites
+    </string>
+    <string name="your_favour">
+      Your favourite food delivered fast at your doorstep.
+    </string>
+</resources>
