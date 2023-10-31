@@ -84,30 +84,30 @@
         android:textSize="16sp" />
 
 
-
-
     <EditText
         android:id="@+id/phoneEditText"
-        android:layout_below="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:inputType="phone"
-        android:gravity="start"
-        android:textSize="18sp"
+        android:layout_below="@+id/text"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rectangle_41"
         android:drawableStart="@drawable/pakflag"
         android:drawablePadding="8dp"
+        android:gravity="start"
         android:hint="(+92)"
-        android:background="@drawable/rectanglebox"
+        android:inputType="phone"
         android:paddingStart="10dp"
-        android:paddingEnd="16dp"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp" />
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:textSize="18sp" />
 
 
 
-
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/signUpButton"
         android:layout_width="200dp"
         android:layout_below="@+id/phoneEditText"
@@ -115,7 +115,8 @@
         android:layout_marginLeft="100dp"
         android:layout_marginTop="22dp"
         android:text="SEND"
-        android:background="@drawable/bavkground_button"
+        android:layout_centerInParent="true"
+        android:background="@color/orange"
         android:textColor="#FFFFFF"
         android:paddingStart="16dp"
         android:gravity="center_horizontal|top"
