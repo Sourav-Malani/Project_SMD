@@ -44,4 +44,17 @@
         <item name="android:fontFamily">@font/sofiapro_light</item>
         <item name="android:lineHeight">18sp</item>
     </style>
+    <style name="create_your">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:shadowColor">#40000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">4</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
+    <style name="choose_from">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 </resources>

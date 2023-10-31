@@ -12,4 +12,10 @@
     <string name="your_favour">
       Your favourite food delivered fast at your doorstep.
     </string>
+    <string name="choose_from">
+     Choose From Our Options Of Designa \nAnd Make Your Own Pizza.
+    </string>
+    <string name="create_your">
+      Create Your Own Pizza
+    </string>
 </resources>
