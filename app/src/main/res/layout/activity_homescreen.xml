@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".homescreen"
+    android:id="@+id/homescreen"
     >
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
@@ -86,10 +87,11 @@
             android:layout_alignParentRight="true"
             app:cardCornerRadius="12dp">
             <ImageView
-                android:id="@+id/img_user"
+                android:id="@+id/profile_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/backgroud_welcome" />
+                android:src="@drawable/profile_image"
+                android:scaleType="centerCrop"/>
         </androidx.cardview.widget.CardView>
 
 
@@ -174,130 +176,634 @@
     <!-- Third RelativeLayout -->
     <RelativeLayout
         android:id="@+id/thirdRelativeLayout"
-        android:layout_height="219dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/secondRelativeLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="0dp"
-        android:background="#FFE0E0">
+        app:layout_constraintHeight_percent="0.291"
+        android:background="#F5F3EF">
+
         <LinearLayout
+            android:id="@+id/firstRowThirdRelativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="215dp"
             android:orientation="horizontal"
-            android:elevation="15dp"
-            android:id="@+id/firstRowThirdRelativeLayout">
+            android:elevation="-7dp"
+            android:background="#F5F3EF">
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="215dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#F5F3EF"
+                >
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="195dp"
+                    android:background="#F5F3EF"
+                    >
 
-            <RelativeLayout
-                android:id="@+id/Item1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/rectangle_1"
-                android:elevation="15dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginBottom="-10dp"
-                android:layout_marginStart="5dp">
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rounded_bottom_corners"
 
-                <ImageView
-                    android:id="@+id/myImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="100dp"
-                    android:src="@drawable/pizza_image"
-                    android:scaleType="centerCrop"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true">
-                </ImageView>
-                <TextView
-                    android:id="@+id/textCreatePizza"
-                    android:layout_width="135dp"
-                    android:layout_height="15dp"
-                    android:text="@string/create_your"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/myImageView"
-                    android:textAppearance="@style/create_your"
-                    android:lineSpacingExtra="-2sp"
-                    android:gravity="center_horizontal|center_vertical"
-                    />
-                <TextView
-                    android:id="@+id/choose_from"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textCreatePizza"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/choose_from"
-                    android:textAppearance="@style/choose_from"
-                    android:lineSpacingExtra="0sp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:alpha="0.8">
-                </TextView>
-
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="135dp"
+                            android:src="@drawable/pizza_image"
+                            android:scaleType="centerCrop"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza1"
+                            android:layout_width="135dp"
+                            android:layout_height="15dp"
+                            android:text="@string/create_your"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@+id/myImageView1"
+                            android:textAppearance="@style/create_your"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza1"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/choose_from"
+                            android:textAppearance="@style/choose_from"
+                            android:lineSpacingExtra="0sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_create"
                     android:layout_width="111dp"
                     android:layout_height="28dp"
-                    android:text="Create Now"
-                    android:fontFamily="@font/signika_semibold"
-                    android:textSize="12sp"
-                    android:layout_below="@+id/choose_from"
-                    android:layout_centerInParent="true"
-                    android:layout_marginVertical="50dp"
+                    android:layout_gravity="bottom|center_horizontal"
                     android:background="@drawable/rectangle_white"
-                    android:elevation="70dp" />
-            </RelativeLayout>
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="Create Now"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/background_dark"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingBottom="2dp"
+                    />
 
-
-            <RelativeLayout
-                android:id="@+id/item2"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:background="@color/indigo"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp"
-
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="220dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="#F5F3EF"
                 >
-                <!-- Content for the second RelativeLayout -->
-            </RelativeLayout>
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="204dp"
+                    android:background="#F5F3EF"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rectangle_white_big"
+
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="109dp"
+                            android:src="@drawable/pizza2"
+                            android:scaleType="fitCenter"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/myImageView2"
+
+                            android:text="@string/some_id"
+                            android:textAppearance="@style/some_id"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza2"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/fresh_farm_"
+                            android:textAppearance="@style/fresh_farm_"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/crisp_capsi2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/choose_from2"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/crisp_capsi"
+                            android:textAppearance="@style/crisp_capsi"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="111dp"
+                    android:layout_height="27dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/rectangle_orange"
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="ADD"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/fourthRelativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/thirdRelativeLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.291"
+        android:background="#F5F3EF">
+
+        <LinearLayout
+            android:id="@+id/firstRowFourthRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:orientation="horizontal"
+            android:elevation="-7dp"
+            android:background="#F5F3EF">
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="220dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="#F5F3EF"
+                >
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="204dp"
+                    android:background="#F5F3EF"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rectangle_white_big"
+
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="109dp"
+                            android:src="@drawable/pizza2"
+                            android:scaleType="fitCenter"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/myImageView3"
+
+                            android:text="@string/some_id"
+                            android:textAppearance="@style/some_id"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza3"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/fresh_farm_"
+                            android:textAppearance="@style/fresh_farm_"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/crisp_capsi3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/choose_from3"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/crisp_capsi"
+                            android:textAppearance="@style/crisp_capsi"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="111dp"
+                    android:layout_height="27dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/rectangle_orange"
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="ADD"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="220dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#F5F3EF"
+                >
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="204dp"
+                    android:background="#F5F3EF"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rectangle_white_big"
+
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="109dp"
+                            android:src="@drawable/pizza2"
+                            android:scaleType="fitCenter"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/myImageView4"
+
+                            android:text="@string/some_id"
+                            android:textAppearance="@style/some_id"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza4"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/fresh_farm_"
+                            android:textAppearance="@style/fresh_farm_"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/crisp_capsi4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/choose_from4"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/crisp_capsi"
+                            android:textAppearance="@style/crisp_capsi"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="111dp"
+                    android:layout_height="27dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/rectangle_orange"
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="ADD"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
     </RelativeLayout>
 
-    <!-- Fourth RelativeLayout -->
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/fourthRelativeLayout"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/thirdRelativeLayout"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHeight_percent="0.26"-->
-<!--        >-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:id="@+id/firstRowFourthRelativeLayout">-->
+<!--    Fifth -->
+    <RelativeLayout
+        android:id="@+id/fifthRelativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/fourthRelativeLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.291"
+        android:background="#F5F3EF">
 
-<!--            <RelativeLayout-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="@color/cyan"-->
-<!--                android:layout_marginTop="10dp">-->
-<!--                &lt;!&ndash; Content for the first RelativeLayout &ndash;&gt;-->
-<!--            </RelativeLayout>-->
-<!--            <RelativeLayout-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="@color/red">-->
-<!--                &lt;!&ndash; Content for the second RelativeLayout &ndash;&gt;-->
-<!--            </RelativeLayout>-->
+        <LinearLayout
+            android:id="@+id/firstRowFifthRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:orientation="horizontal"
+            android:elevation="-7dp"
+            android:background="#F5F3EF">
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="220dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="#F5F3EF"
+                >
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="204dp"
+                    android:background="#F5F3EF"
+                    >
 
-<!--        </LinearLayout>-->
-<!--    </RelativeLayout>-->
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rectangle_white_big"
+
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="109dp"
+                            android:src="@drawable/pizza2"
+                            android:scaleType="fitCenter"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/myImageView5"
+
+                            android:text="@string/some_id"
+                            android:textAppearance="@style/some_id"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza5"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/fresh_farm_"
+                            android:textAppearance="@style/fresh_farm_"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/crisp_capsi5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/choose_from5"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/crisp_capsi"
+                            android:textAppearance="@style/crisp_capsi"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="111dp"
+                    android:layout_height="27dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/rectangle_orange"
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="ADD"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="195dp"
+                android:layout_height="220dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#F5F3EF"
+                >
+                <!-- Parent FrameLayout 'FL' -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="204dp"
+                    android:background="#F5F3EF"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="195dp"
+                        android:layout_height="195dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical"
+                        android:background="@drawable/rectangle_white_big"
+
+                        >
+                        <ImageView
+                            android:id="@+id/myImageView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="109dp"
+                            android:src="@drawable/pizza2"
+                            android:scaleType="fitCenter"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/textCreatePizza6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/myImageView6"
+
+                            android:text="@string/some_id"
+                            android:textAppearance="@style/some_id"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal"
+                            />
+                        <TextView
+                            android:id="@+id/choose_from6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textCreatePizza6"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/fresh_farm_"
+                            android:textAppearance="@style/fresh_farm_"
+                            android:lineSpacingExtra="-2sp"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/crisp_capsi6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/choose_from6"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/crisp_capsi"
+                            android:textAppearance="@style/crisp_capsi"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:alpha="0.8">
+                        </TextView>
+                    </RelativeLayout>
+                </FrameLayout>
+                <!-- Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="111dp"
+                    android:layout_height="27dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="@drawable/rectangle_orange"
+                    android:fontFamily="@font/signika_semibold"
+                    android:text="ADD"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:elevation="0dp"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@+id/homescreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="-60dp">
+        <View
+            android:id="@+id/rectangle_floating_pizza"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/floating_pizza_box"
+            android:elevation="13dp"
+            android:alpha="0.9"
+            />
+        <TextView
+            android:id="@+id/floating_pizza_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/some_id"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="-6sp"
+            android:textAppearance="@style/some_id"
+            android:gravity="center_horizontal|center_vertical"
+            android:elevation="13dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            />
+        <View
+            android:id="@+id/ellipse_62"
+            android:layout_width="41dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ellipse_62"
+            android:elevation="14dp"
+            android:layout_marginLeft="96dp"
+            android:layout_marginTop="-8dp"
+            />
+        <TextView
+            android:id="@+id/floating_count_text"
+            android:layout_width="8dp"
+            android:layout_height="15dp"
+            android:elevation="14dp"
+
+            android:layout_alignParentTop="true"
+
+            android:layout_marginTop="-2dp"
+            android:layout_marginLeft="104sp"
+            android:text="3"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            android:lineSpacingExtra="-1sp"
+            android:gravity="center_horizontal|center_vertical"
+            />
+        <View
+            android:id="@+id/ellipse_61"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/ellipse_61"
+            android:elevation="14dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="65dp"
+            />
+        <ImageView
+            android:id="@+id/pizza_image_floating"
+            android:src="@drawable/floating_pizza"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/ellipse_61"
+            android:elevation="14dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="65dp"/>
+    </RelativeLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

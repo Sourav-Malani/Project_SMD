@@ -56,5 +56,31 @@
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
+    <style name="some_id">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FD5C2E</item>
+        <item name="android:fontFamily">@font/signika_regular</item>
+        <item name="android:lineHeight">18sp</item>
 
+    </style>
+    <style name="fresh_farm_">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#24262F</item>
+        <item name="android:fontFamily">@font/signika_semibold</item>
+        <item name="android:lineHeight">15sp</item>
+    </style>
+    <style name="crisp_capsi">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#969AB0</item>
+        <item name="android:fontFamily">@font/signika_light</item>
+        <item name="android:lineHeight">12sp</item>
+
+    </style>
+    <style name="floating_pizza_text">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/signika_regular</item>
+        <item name="android:lineHeight">15sp</item>
+
+    </style>
 </resources>

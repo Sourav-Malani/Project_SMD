@@ -18,4 +18,14 @@
     <string name="create_your">
       Create Your Own Pizza
     </string>
+    <!-- strings.xml -->
+    <string name="some_id">
+       Rs14.25
+    </string>
+    <string name="fresh_farm_">
+     Fresh Farm House
+    </string>
+    <string name="crisp_capsi">
+     crisp capsicum, succulent mushrooms and fresh tomatoes
+    </string>
 </resources>
