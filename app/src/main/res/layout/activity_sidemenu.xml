@@ -7,7 +7,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    tools:context=".sidemenu">
 
     <!-- Content View -->
     <RelativeLayout
@@ -159,7 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="30dp"
-            android:text="Helps & FAQs"
+            android:text="Helps &amp; FAQs"
             android:textColor="@color/black"
             android:fontFamily="@font/sofia_pro_regular"
             android:textSize="16sp"
