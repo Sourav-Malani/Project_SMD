@@ -106,23 +106,20 @@
         android:textSize="18sp" />
 
 
-
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/signUpButton"
-        android:layout_width="200dp"
         android:layout_below="@+id/phoneEditText"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="248dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
         android:text="SEND"
-        android:layout_centerInParent="true"
-        android:background="@color/orange"
-        android:textColor="#FFFFFF"
-        android:paddingStart="16dp"
-        android:gravity="center_horizontal|top"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/sofia_pro_semibold"
+        android:textAlignment="center"
+
         />
 
 </RelativeLayout>

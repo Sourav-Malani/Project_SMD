@@ -88,6 +88,12 @@
         <item name="android:textColor">#FE724C</item>
         <item name="android:fontFamily">@font/sofia_pro_semibold</item>
         <item name="android:lineHeight">22sp</item>
-
     </style>
+    <style name="sofia_pro_medium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#FE724C</item>
+        <item name="android:fontFamily">@font/sofia_pro_medium</item>
+        <item name="android:lineHeight">19sp</item>
+    </style>
+
 </resources>

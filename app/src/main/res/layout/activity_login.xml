@@ -92,7 +92,7 @@
         android:layout_marginTop="9dp"
         android:layout_marginLeft="27dp"
         android:layout_marginRight="27dp"
-        android:background="@drawable/rectanglebox"
+        android:background="@drawable/rectangle_41"
         android:hint="Enter your email"
         android:textStyle="bold"
         android:padding="16dp" />
@@ -118,16 +118,19 @@
         android:layout_marginLeft="27dp"
         android:layout_marginRight="27dp"
         android:hint="Password"
-        app:endIconMode="password_toggle">
+        app:endIconMode="password_toggle"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:background="@drawable/rectanglebox"
+            android:background="@drawable/rectangle_41"
             android:hint="Password"
-            android:padding="16dp" />
+            android:padding="16dp"
+
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,27 +139,28 @@
         android:layout_height="wrap_content"
         android:id="@+id/forget"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="150dp"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/passwordText"
-        android:text="Forget Passowrd"
-        android:textColor="#FFA500" />
+        android:text="Forget Passowrd?"
+        android:textAppearance="@style/sofia_pro_medium"
+        android:textSize="14sp"
+        android:textColor="@color/orange"
+        android:layout_marginBottom="20dp"
+        />
 
 
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="200dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/forget"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="22dp"
-        android:text="Login"
-        android:background="@drawable/bavkground_button"
-        android:textColor="#FFFFFF"
-        android:paddingStart="16dp"
-        android:gravity="center_horizontal|top"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:layout_centerHorizontal="true"
+        android:text="LOGIN"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:fontFamily="@font/sofia_pro_semibold"
+        android:textAlignment="center"
         />
 
     <LinearLayout
@@ -177,25 +181,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:textColor="#FFA500" />
+            android:textAppearance="@style/sofia_pro_medium"
+            android:textSize="14sp"
+            android:textColor="@color/orange"/>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/sign_in_with_text_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:id="@+id/textbl2"
         android:layout_below="@+id/textbl"
-        android:layout_marginLeft="27dp"
-        android:layout_marginRight="27dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        >
 
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#000000" />
+            android:background="#B3B3B3" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -206,85 +211,118 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#000000" />
+            android:background="#B3B3B3" />
+
+<!--        <View-->
+<!--            android:id="@+id/line_1"-->
+<!--            android:layout_width="84dp"-->
+<!--            android:layout_height="2dp"-->
+<!--            android:layout_alignParentLeft="true"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_marginLeft="32dp"-->
+<!--            android:layout_marginTop="521dp"-->
+<!--            android:background="@drawable/line_71" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/sign_in_with"-->
+<!--            android:layout_width="86dp"-->
+<!--            android:layout_height="21dp"-->
+<!--            android:layout_alignParentLeft="true"-->
+<!--            android:layout_marginLeft="145dp"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_marginTop="510dp"-->
+<!--            android:text="sign in with"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:gravity="center_horizontal|top"-->
+<!--            />-->
+<!--        <View-->
+<!--            android:id="@+id/line_2"-->
+<!--            android:layout_width="84dp"-->
+<!--            android:layout_height="2dp"-->
+<!--            android:layout_alignParentLeft="true"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_marginLeft="274dp"-->
+<!--            android:layout_marginTop="519dp"-->
+<!--            android:background="@drawable/line_71" />-->
+
     </LinearLayout>
 
 
 
-
-    <View
-        android:id="@+id/btn_facebook"
-        android:layout_width="139.26dp"
-        android:layout_height="54dp"
-        android:layout_below="@+id/textbl2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="650dp"
-        android:background="@drawable/rectangle_white"
-        android:elevation="35.75dp" />
-
-    <TextView
-        android:id="@+id/facebook"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="87dp"
-        android:layout_marginTop="667dp"
-        android:elevation="60dp"
-        android:text="FACEBOOK"
-        android:textAppearance="@style/facebook"
-        android:textStyle="bold"
-        android:textColor="@color/black" />
+        android:orientation="horizontal"
+        android:layout_below="@+id/sign_in_with_text_ll"
+        >
+        <View
+            android:id="@+id/btn_facebook"
+            android:layout_width="139.26dp"
+            android:layout_height="54dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/rectangle_white"
+            />
 
-    <View
-        android:id="@+id/group_17863"
-        android:layout_width="28.62dp"
-        android:layout_height="29.7dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="663dp"
-        android:background="@drawable/logo_fb"
-        android:elevation="60dp" />
+        <TextView
+            android:id="@+id/facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="FACEBOOK"
+            android:layout_marginLeft="100dp"
+            android:layout_centerVertical="true"
 
-    <View
-        android:id="@+id/btn_google"
-        android:layout_width="139.26dp"
-        android:layout_height="54dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="650dp"
-        android:layout_marginRight="32dp"
-        android:background="@drawable/rectangle_white"
-        android:elevation="35.75dp" />
+            android:textAppearance="@style/facebook"
+            android:textSize="13sp"
+            android:textColor="@color/black" />
 
+        <View
+            android:id="@+id/group_17863"
+            android:layout_width="50.62dp"
+            android:layout_height="51.7dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="50dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/logo_fb"
+            android:elevation="60dp" />
 
-    <View
-        android:id="@+id/logo_google"
-        android:layout_width="28.62dp"
-        android:layout_height="29.7dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="661dp"
-        android:layout_marginRight="128dp"
-        android:background="@drawable/icons_google"
-        android:elevation="60dp" />
+        <View
+            android:id="@+id/btn_google"
+            android:layout_width="139.26dp"
+            android:layout_height="54dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/rectangle_white"
+            android:elevation="35.75dp"
+            android:layout_centerVertical="true"/>
 
-    <TextView
-        android:id="@+id/google"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="667dp"
-        android:layout_marginRight="55dp"
-        android:elevation="60dp"
-        android:text="GOOGLE"
-        android:textAppearance="@style/facebook"
-        android:textColor="@color/black"
-        android:textStyle="bold"/>
+        <!-- Auto layout, variables, and unit scale are not yet supported -->
 
+        <View
+            android:id="@+id/logo_google"
+            android:layout_width="50.62dp"
+            android:layout_height="51.7dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="80dp"
+            android:background="@drawable/icons_google"
+            android:elevation="60dp" />
+
+        <TextView
+            android:id="@+id/google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:elevation="60dp"
+            android:text="GOOGLE"
+            android:textSize="13sp"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/facebook"
+            />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -107,7 +107,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="5dp"
-            android:background="@drawable/verificationbox" />
+            android:background="@drawable/verification_box" />
 
         <EditText
             android:id="@+id/digit2"
@@ -118,7 +118,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="5dp"
-            android:background="@drawable/verificationbox" />
+            android:background="@drawable/verification_box" />
 
         <EditText
             android:id="@+id/digit3"
@@ -129,7 +129,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="5dp"
-            android:background="@drawable/verificationbox" />
+            android:background="@drawable/verification_box" />
 
         <EditText
             android:id="@+id/digit4"
@@ -140,7 +140,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="5dp"
-            android:background="@drawable/verificationbox" />
+            android:background="@drawable/verification_box" />
     </LinearLayout>
 
     <LinearLayout
@@ -160,8 +160,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pleass resend"
-            android:textColor="#FFA500" />
+            android:text="Please resend"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            android:textAppearance="@style/sofia_pro_medium"
+            />
     </LinearLayout>
 
 </RelativeLayout>

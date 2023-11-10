@@ -15,13 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Your existing content goes here -->
 
     </RelativeLayout>
 
     <!-- Navigation Drawer -->
     <RelativeLayout
-        android:id="@+id/side_menu"
+        android:id="@+id/side_menu_items"
         android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -70,10 +69,10 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="14dp"
             android:layout_below="@id/user_email"
             android:layout_marginTop="45dp"
-            android:background="@drawable/arrow_down" />
+            android:background="@drawable/document" />
 
         <TextView
             android:id="@+id/menuItem1"
@@ -102,6 +101,15 @@
             android:layout_below="@id/menuItem1"
             android:layout_marginTop="20dp" />
 
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem1"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/profile" />
+
         <TextView
             android:id="@+id/menuItem3"
             android:layout_width="wrap_content"
@@ -115,6 +123,15 @@
             android:layout_below="@id/menuItem2"
             android:layout_marginTop="20dp" />
 
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem2"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/location" />
+
         <TextView
             android:id="@+id/menuItem4"
             android:layout_width="wrap_content"
@@ -127,6 +144,14 @@
             android:textSize="16sp"
             android:layout_below="@id/menuItem3"
             android:layout_marginTop="20dp" />
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem3"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/wallet" />
 
         <TextView
             android:id="@+id/menuItem5"
@@ -140,7 +165,14 @@
             android:textSize="16sp"
             android:layout_below="@id/menuItem4"
             android:layout_marginTop="20dp" />
-
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem4"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/message" />
         <TextView
             android:id="@+id/menuItem6"
             android:layout_width="wrap_content"
@@ -153,7 +185,14 @@
             android:textSize="16sp"
             android:layout_below="@id/menuItem5"
             android:layout_marginTop="20dp" />
-
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem5"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/setting" />
         <TextView
             android:id="@+id/menuItem7"
             android:layout_width="wrap_content"
@@ -166,6 +205,63 @@
             android:textSize="16sp"
             android:layout_below="@id/menuItem6"
             android:layout_marginTop="20dp" />
+        <View
+            android:id="@+id/lastItem"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem6"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/helps" />
+        <View
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="14dp"
+            android:layout_below="@id/menuItem5"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/profile" />
+        <View
+            android:id="@+id/btn_logout"
+            android:layout_width="117dp"
+            android:layout_height="43dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="22dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="650dp"
+            android:background="@drawable/rectangle_orange_small"
+            android:elevation="0dp"
+            android:layout_below="@+id/lastItem"
+            />
+        <ImageView
+            android:id="@+id/logo_logout"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="33dp"
+            android:background="@drawable/logout_logo"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="655dp"
+            android:layout_below="@+id/btn_logout"
+            />
+        <TextView
+            android:id="@+id/log_out"
+            android:layout_width="59dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="660dp"
+            android:text="Log Out"
+            android:fontFamily="@font/sofia_pro_medium"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:lineHeight="16sp"
+            android:lineSpacingExtra="-6sp"
+            android:gravity="top"
+            />
 
     </RelativeLayout>
+
 </androidx.drawerlayout.widget.DrawerLayout>
