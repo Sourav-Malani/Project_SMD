@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,16 +16,8 @@
             android:name=".my_orders"
             android:exported="false" />
         <activity
-            android:name=".card"
+            android:name=".cart"
             android:exported="false" />
-        <activity
-            android:name=".ui.cart"
-            android:exported="false" />
-        <activity
-            android:name=".sidenavigation"
-            android:exported="false"
-            android:label="@string/title_activity_sidenavigation"
-            android:theme="@style/Theme.Project_SMD.NoActionBar" />
         <activity
             android:name=".sidemenu"
             android:exported="false" />
@@ -46,7 +38,9 @@
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Project_SMD.NoActionBar"
+            />
         <activity
             android:name=".homescreen"
             android:exported="false" />
@@ -58,6 +52,9 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+       <activity
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/splash_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToOutline="true"
     android:background="@color/orange"
-    >
+    tools:context=".SplashScreen">
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <ImageView
         android:id="@+id/pizza_logo_splash"
@@ -38,7 +39,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="73dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="450dp"
         android:text="@string/food"
         android:textAppearance="@style/food"
         android:gravity="center_horizontal|center_vertical"
@@ -50,7 +51,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="213dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="450dp"
         android:text="Bites"
         android:textAppearance="@style/hub"
         android:lineSpacingExtra="8sp"
