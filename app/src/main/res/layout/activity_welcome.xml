@@ -107,73 +107,53 @@
         android:layout_below="@+id/line_2"
         android:layout_marginTop="20dp"
         >
-        <View
-            android:id="@+id/btn_facebook"
-            android:layout_width="139.26dp"
-            android:layout_height="54dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="32dp"
-            android:background="@drawable/rectangle_white"
-            />
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="30dp"
+            android:layout_width="147dp"
+            android:layout_height="57dp"
+            app:cardElevation="8dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginLeft="20dp">
+            <Button
+                android:id="@+id/btn_facebook"
+                android:layout_width="147dp"
+                android:layout_height="57dp"
+                android:drawablePadding="0dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="FACEBOOK"
+                android:textSize="14dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
+                android:textColor="@color/black"
+                android:drawableLeft="@drawable/logo_fb"
+                android:padding="10dp"
+                android:backgroundTint="@color/white"
+                />
+        </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="FACEBOOK"
-            android:layout_marginLeft="100dp"
-            android:layout_centerVertical="true"
-
-            android:textAppearance="@style/facebook"
-            android:textSize="13sp"
-            android:textColor="@color/black" />
-
-        <View
-            android:id="@+id/group_17863"
-            android:layout_width="50.62dp"
-            android:layout_height="51.7dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="50dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/logo_fb"
-            android:elevation="60dp" />
-
-        <View
-            android:id="@+id/btn_google"
-            android:layout_width="139.26dp"
-            android:layout_height="54dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/rectangle_white"
-            android:elevation="35.75dp"
-            android:layout_centerVertical="true"/>
-
-        <!-- Auto layout, variables, and unit scale are not yet supported -->
-
-        <View
-            android:id="@+id/logo_google"
-            android:layout_width="50.62dp"
-            android:layout_height="51.7dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="80dp"
-            android:background="@drawable/icons_google"
-            android:elevation="60dp" />
-
-        <TextView
-            android:id="@+id/google"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="30dp"
+            android:layout_width="147dp"
+            android:layout_height="57dp"
+            app:cardElevation="8dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:elevation="60dp"
-            android:text="GOOGLE"
-            android:textSize="13sp"
-            android:layout_centerVertical="true"
-            android:textAppearance="@style/facebook"
-            />
+            >
+            <Button
+                android:id="@+id/btn_google"
+                android:layout_width="147dp"
+                android:layout_height="57dp"
+                android:drawablePadding="0dp"
+                android:gravity="center"
+                android:text="GOOGLE"
+                android:textSize="14dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
+                android:textColor="@color/black"
+                android:drawableLeft="@drawable/icons_google"
+                android:padding="10dp"
+                android:backgroundTint="@color/white"
+                />
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
     <View
         android:id="@+id/rectangle_transparent"
