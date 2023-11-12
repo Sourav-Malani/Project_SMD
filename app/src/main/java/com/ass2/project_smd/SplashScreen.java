@@ -50,7 +50,7 @@ public class SplashScreen  extends AppCompatActivity {
                         intent = new Intent(SplashScreen.this, homescreen.class);
                         intent.putExtra("userEmail", userEmail[0]);
                     } else { // If the user is not logged in.
-                        intent = new Intent(SplashScreen.this, Login.class);
+                        intent = new Intent(SplashScreen.this, welcome.class);
                     }
 
                     startActivity(intent);
