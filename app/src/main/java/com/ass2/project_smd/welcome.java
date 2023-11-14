@@ -23,13 +23,14 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class welcome extends AppCompatActivity {
+public class welcome extends AppCompatActivity  {
     Button btn_facebook, btn_google;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     TextView signIn;
 
     private static final int RC_SIGN_IN = 123; // Use a unique request code
+    private static final String TAG = "SignInActivity";
     private SignInClient signInClient;
 
     @Override
@@ -46,16 +47,22 @@ public class welcome extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn(); // Call your sign-in method when the button is clicked
+                //signInWithApp(); // Call your sign-in method when the button is clicked
             }
         });
 
-        // Initialize Google Sign-In
+        // [START configure_signin]
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+        // [END configure_signin]
 
+        // [START build_client]
+        // Build a GoogleSignInClient with the options specified by gso.
         gsc = GoogleSignIn.getClient(this, gso);
+        // [END build_client]
 
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,10 +73,21 @@ public class welcome extends AppCompatActivity {
     }
 
     // Your existing code for navigation
-    void navigateToNextActivity() {
+    void navigateToNextActivity(GoogleSignInAccount account) {
         Intent intent = new Intent(this, homescreen.class);
+        intent.putExtra("googleSignInAccount", account); // Pass the GoogleSignInAccount
         startActivity(intent);
-        finish();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // [START on_start_sign_in]
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
+        // [END on_start_sign_in]
     }
 
     void nagivateToSignInActivity() {
@@ -107,9 +125,11 @@ public class welcome extends AppCompatActivity {
     private void updateUI(@Nullable GoogleSignInAccount account) {
         if (account != null) {
             Toast.makeText(this, "Sign-in successful", Toast.LENGTH_SHORT).show();
-            navigateToNextActivity();
+            Log.w("GoogleSignIn", "signInResult:Name=" + account.getDisplayName());
+            navigateToNextActivity(account);
         } else {
             Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
         }
     }
+
 }
