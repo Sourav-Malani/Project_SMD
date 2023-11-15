@@ -3,6 +3,7 @@ package com.ass2.project_smd;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ass2.Adapters.CardAdapter;
+import com.ass2.Adapters.MainAdapter;
+import com.ass2.Models.MainModel;
+import com.ass2.project_smd.databinding.ActivityHomescreenBinding;
+import com.ass2.project_smd.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -21,6 +27,11 @@ import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class homescreen extends AppCompatActivity {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
@@ -31,10 +42,45 @@ public class homescreen extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123; // Use a unique request code
     private static final String TAG = "SignInActivity";
 
+    ActivityHomescreenBinding binding;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homescreen);
+        binding = ActivityHomescreenBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        ArrayList<MainModel> list = new ArrayList<>();
+        list.add(new MainModel(
+                R.drawable.pizza_image,
+                "Create Your Own Pizza",
+                "$ 10",
+                "Choose From Our Options Of Designa And Make Your Own Pizza.",
+                "pizza",
+                1));
+
+        list.add(new MainModel(
+                R.drawable.pizza2,
+                "Pizza2",
+                "$ 5",
+                "crisp capsicum, succulent mushrooms and fresh tomatoes",
+                "pizza",
+                2));
+        list.add(new MainModel(
+                R.drawable.pizza3,
+                "Pizza3",
+                "$ 15",
+                "Chunky paneer with crisp capsicum and spicy red pepper",
+                "pizza",
+                3));
+
+        MainAdapter adapter = new MainAdapter(list, this);
+        binding.recyclerViewCards.setAdapter(adapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2); // 2 columns
+        binding.recyclerViewCards.setLayoutManager(layoutManager);
+
 
         address = findViewById(R.id.address);
         profilePic = findViewById(R.id.profile_image);
