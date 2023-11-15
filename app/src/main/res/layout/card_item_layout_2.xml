@@ -4,7 +4,8 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     android:layout_marginLeft="5dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:backgroundTint="#F5F3EF">
     <!-- Parent FrameLayout 'FL' -->
     <FrameLayout
         android:layout_width="match_parent"
@@ -13,7 +14,7 @@
         >
 
         <RelativeLayout
-            android:layout_width="195dp"
+            android:layout_width="match_parent"
             android:layout_height="195dp"
             android:layout_marginBottom="15dp"
             android:orientation="vertical"
@@ -68,13 +69,14 @@
     <!-- Button -->
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="111dp"
-        android:layout_height="27dp"
+        android:layout_height="35dp"
         android:layout_gravity="bottom|center_horizontal"
         android:background="@drawable/rectangle_orange"
         android:fontFamily="@font/signika_semibold"
         android:text="ADD"
         android:textSize="12sp"
         android:textColor="@android:color/white"
+        android:textAlignment="center"
         android:elevation="0dp"
         android:layout_marginBottom="8dp"
         />

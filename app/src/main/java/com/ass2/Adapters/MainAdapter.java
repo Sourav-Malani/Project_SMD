@@ -15,30 +15,48 @@ import com.ass2.project_smd.R;
 
 import java.util.ArrayList;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.viewholder> {
-    ArrayList<MainModel> list;
-    Context context;
+public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int VIEW_TYPE_LAYOUT_1 = 0;
+    private static final int VIEW_TYPE_LAYOUT_2 = 1;
+
+    private ArrayList<MainModel> list;
+    private Context context;
 
     public MainAdapter(ArrayList<MainModel> list, Context context) {
         this.list = list;
         this.context = context;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0) ? VIEW_TYPE_LAYOUT_1 : VIEW_TYPE_LAYOUT_2;
+    }
+
     @NonNull
     @Override
-    public viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card_item_layout_2,parent,false);
-        return new viewholder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        switch (viewType) {
+            case VIEW_TYPE_LAYOUT_1:
+                View layout1View = inflater.inflate(R.layout.card_item_layout_1, parent, false);
+                return new Layout1ViewHolder(layout1View);
+            case VIEW_TYPE_LAYOUT_2:
+            default:
+                View layout2View = inflater.inflate(R.layout.card_item_layout_2, parent, false);
+                return new Layout2ViewHolder(layout2View);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewholder holder, int position) {
-        final MainModel model = list.get(position);
-        holder.pizzaImage.setImageResource(model.getImage());
-        holder.pizzaName.setText(model.getName());
-        holder.pizzaPrice.setText(model.getPrice());
-        holder.pizzaDescription.setText(model.getDescription());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        MainModel model = list.get(position);
 
+        if (holder instanceof Layout1ViewHolder) {
+            ((Layout1ViewHolder) holder).bindLayout1Data(model);
+        } else if (holder instanceof Layout2ViewHolder) {
+            ((Layout2ViewHolder) holder).bindLayout2Data(model);
+        }
     }
 
     @Override
@@ -46,16 +64,46 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.viewholder> {
         return list.size();
     }
 
-    public class viewholder extends RecyclerView.ViewHolder {
+    // ViewHolder for layout 1
+    private static class Layout1ViewHolder extends RecyclerView.ViewHolder {
+        ImageView pizzaImage;
+        TextView pizzaText,pizzaDescription;
+
+        Layout1ViewHolder(View itemView) {
+            super(itemView);
+            pizzaImage = itemView.findViewById(R.id.pizzaImage);
+            pizzaText = itemView.findViewById(R.id.pizzaText);
+            pizzaDescription = itemView.findViewById(R.id.pizzaDescription);
+        }
+
+        void bindLayout1Data(MainModel model) {
+            // Bind data for layout 1
+            pizzaImage.setImageResource(model.getImage());
+            pizzaText.setText(model.getName());
+            pizzaDescription.setText(model.getDescription());
+        }
+    }
+
+    // ViewHolder for layout 2
+    private static class Layout2ViewHolder extends RecyclerView.ViewHolder {
         ImageView pizzaImage;
         TextView pizzaName, pizzaPrice, pizzaDescription;
 
-        public viewholder(@NonNull View itemView) {
+        Layout2ViewHolder(View itemView) {
             super(itemView);
             pizzaImage = itemView.findViewById(R.id.pizzaImage);
             pizzaName = itemView.findViewById(R.id.pizzaName);
             pizzaPrice = itemView.findViewById(R.id.pizzaPrice);
             pizzaDescription = itemView.findViewById(R.id.pizzaDescription);
+        }
+
+        void bindLayout2Data(MainModel model) {
+            // Bind data for layout 2
+            pizzaImage.setImageResource(model.getImage());
+            pizzaName.setText(model.getName());
+            pizzaPrice.setText(model.getPrice());
+            pizzaDescription.setText(model.getDescription());
+
         }
     }
 }

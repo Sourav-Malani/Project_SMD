@@ -17,7 +17,7 @@
             <RelativeLayout
                 android:layout_width="195dp"
                 android:layout_height="195dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_bottom_corners"
 
@@ -32,7 +32,7 @@
                     android:layout_centerHorizontal="true">
                 </ImageView>
                 <TextView
-                    android:id="@+id/textCreatePizza1"
+                    android:id="@+id/pizzaText"
                     android:layout_width="135dp"
                     android:layout_height="15dp"
                     android:text="@string/create_your"
@@ -43,10 +43,10 @@
                     android:gravity="center_horizontal|center_vertical"
                     />
                 <TextView
-                    android:id="@+id/choose_from1"
+                    android:id="@+id/pizzaDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textCreatePizza1"
+                    android:layout_below="@+id/pizzaText"
                     android:layout_centerHorizontal="true"
                     android:text="@string/choose_from"
                     android:textAppearance="@style/choose_from"
@@ -59,7 +59,7 @@
         <!-- Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="111dp"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:layout_gravity="bottom|center_horizontal"
             android:background="@drawable/rectangle_white"
             android:fontFamily="@font/signika_semibold"

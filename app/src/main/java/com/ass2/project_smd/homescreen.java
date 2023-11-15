@@ -8,15 +8,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ass2.Adapters.CardAdapter;
 import com.ass2.Adapters.MainAdapter;
 import com.ass2.Models.MainModel;
 import com.ass2.project_smd.databinding.ActivityHomescreenBinding;
-import com.ass2.project_smd.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,11 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
-import android.view.View;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class homescreen extends AppCompatActivity {
     GoogleSignInOptions gso;
@@ -62,18 +55,60 @@ public class homescreen extends AppCompatActivity {
 
         list.add(new MainModel(
                 R.drawable.pizza2,
-                "Pizza2",
-                "$ 5",
+                "Fresh Farm House",
+                "Rs 1400",
                 "crisp capsicum, succulent mushrooms and fresh tomatoes",
                 "pizza",
                 2));
         list.add(new MainModel(
                 R.drawable.pizza3,
-                "Pizza3",
+                "Peppy Paneer",
+                "Rs. 5900",
+                "Chunky paneer with crisp capsicum and spicy red pepperr",
+                "pizza",
+                3));
+        list.add(new MainModel(
+                R.drawable.pizza4,
+                "Mexican Green Wave",
+                "Rs. 1400",
+                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                "pizza",
+                4));
+        list.add(new MainModel(
+                R.drawable.pizza5,
+                "Peppy Paneer",
                 "$ 15",
                 "Chunky paneer with crisp capsicum and spicy red pepper",
                 "pizza",
-                3));
+                5));
+        list.add(new MainModel(
+                R.drawable.pizza6,
+                "Mexican Green Wave",
+                "Rs 1700",
+                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                "pizza",
+                6));
+        list.add(new MainModel(
+                R.drawable.pizza6,
+                "Mexican Green Wave",
+                "Rs 1700",
+                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                "pizza",
+                7));
+        list.add(new MainModel(
+                R.drawable.pizza6,
+                "Mexican Green Wave",
+                "Rs 1700",
+                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                "pizza",
+                8));
+        list.add(new MainModel(
+                R.drawable.pizza6,
+                "Mexican Green Wave",
+                "Rs 1700",
+                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                "pizza",
+                9));
 
         MainAdapter adapter = new MainAdapter(list, this);
         binding.recyclerViewCards.setAdapter(adapter);

@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/vectorImageView"
-            android:layout_width="78dp"
-            android:layout_height="78dp"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
             android:layout_alignParentLeft="true"
             android:layout_gravity="center"
             android:layout_marginLeft="15dp"
@@ -180,12 +180,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/secondRelativeLayout"
-        android:layout_marginTop="40dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@+id/firstRelativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/secondRelativeLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="#F5F3EF"
         />
 
     <RelativeLayout
