@@ -58,4 +58,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:latest_version'
     implementation 'com.google.android.gms:play-services-auth:20.0.1'
 
+    implementation 'com.yarolegovich:sliding-root-nav:1.1.1'
+
 }

@@ -47,7 +47,7 @@ public class SplashScreen  extends AppCompatActivity {
                         });
 
                         // Start the new activity inside this callback
-                        intent = new Intent(SplashScreen.this, homescreen.class);
+                        intent = new Intent(SplashScreen.this, DashboardFragment.class);
                         intent.putExtra("userEmail", userEmail[0]);
                     } else { // If the user is not logged in.
                         intent = new Intent(SplashScreen.this, welcome.class);
