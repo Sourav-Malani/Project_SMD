@@ -5,6 +5,7 @@ import static androidx.core.text.SpannableStringBuilderKt.color;
 
 import static com.ass2.project_smd.R.*;
 
+import android.annotation.SuppressLint;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +25,11 @@ import com.ass2.Drawer.DrawerAdapter;
 import com.ass2.Drawer.DrawerItem;
 import com.ass2.Drawer.SimpleItem;
 import com.ass2.Drawer.SpaceItem;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.squareup.picasso.Picasso;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
@@ -31,33 +37,49 @@ import java.util.Arrays;
 
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSelectedListener {
+public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSelectedListener, DashboardFragment.DashboardListener {
 
-  private static final int POS_CLOSE = 0;
-  private static final int POS_DASHBOARD = 1;
-  private static final int POS_MY_PROFILE = 2;
-  private static final int POS_NEARBY_RES = 3;
-  private static final int POS_SETTINGS = 4;
-  private static final int POS_ABOUT_US = 5;
-  private static final int POS_LOGOUT = 6;
+  private static final int POS_MY_ORDERS = 0;
+  private static final int POS_MY_PROFILE = 1;
+  private static final int POS_DELIVERY_ADDRESS = 2;
+  private static final int POS_PAYMENT_METHODS = 3;
+  private static final int POS_CONTACT_US= 4;
+  private static final int POS_SETTINGS = 5;
+  private static final int POS_HELP = 6;
+  private static final int POS_LOGOUT = 7;
+
 
   private String[] screenTitles;
   private Drawable[] screenIcons;
 
   private SlidingRootNav  slidingRootNav;
 
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
+
+    ImageView drawerProfilePic;
+    TextView drawerUserEmail, drawerUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(layout.activity_nav_bar);
+        //profilePic = findViewById(R.id.profile_image);
+        //user_name = findViewById(R.id.user_name);
+        //user_email = findViewById(R.id.user_email);
 
         Toolbar toolbar = findViewById(id.toolbar);
         setSupportActionBar(toolbar);
 
         slidingRootNav = new SlidingRootNavBuilder(this)
+                .withDragDistance(180)
+                .withRootViewScale(0.75f)
+                .withRootViewElevation(25)
                 .withToolbarMenuToggle(toolbar)
                 .withMenuOpened(false)
                 .withContentClickableWhenMenuOpened(false)
@@ -68,27 +90,46 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         screenTitles = loadScreenTitles();
 
         DrawerAdapter adapter = new DrawerAdapter(Arrays.asList(
-                createItemFor(POS_CLOSE),
-                createItemFor(POS_DASHBOARD).setChecked(true),
+                createItemFor(POS_MY_ORDERS).setChecked(true),
                 createItemFor(POS_MY_PROFILE),
-                createItemFor(POS_NEARBY_RES),
+                createItemFor(POS_DELIVERY_ADDRESS),
+                createItemFor(POS_PAYMENT_METHODS),
+                createItemFor(POS_CONTACT_US),
                 createItemFor(POS_SETTINGS),
-                createItemFor(POS_ABOUT_US),
-                new SpaceItem(10),
-                createItemFor(POS_LOGOUT)));
+                createItemFor(POS_HELP),
+                new SpaceItem(48),
+                createItemForLogout(POS_LOGOUT)));
         adapter.setListener(this);
 
 
         //View otherLayout = getLayoutInflater().inflate(layout.drawer_menu, null);//"Fixed here"
 
         // Find the RecyclerView from the inflated layout
-        RecyclerView list = findViewById(R.id.list);
+        @SuppressLint("MissingInflatedId") RecyclerView list = findViewById(R.id.list);
         list.setNestedScrollingEnabled(false);
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
 
-        adapter.setSelected(POS_DASHBOARD);
+        adapter.setSelected(POS_MY_ORDERS);
 
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        // Retrieve the GoogleSignInAccount object from the intent
+        //GoogleSignInAccount recievedAccount = getIntent().getParcelableExtra("googleSignInAccount");
+        GoogleSignInAccount recievedAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+        drawerUserName = slidingRootNav.getLayout().findViewById(id.user_name);
+        drawerUserEmail = slidingRootNav.getLayout().findViewById(id.user_email);
+        drawerProfilePic = slidingRootNav.getLayout().findViewById(id.profile_image);
+
+
+        // Now you can use the 'account' object as needed
+        if (recievedAccount != null) {
+            updateUI(recievedAccount);
+        }
 
 
     }
@@ -97,6 +138,13 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
     private DrawerItem createItemFor(int position) {
         return new SimpleItem(screenIcons[position], screenTitles[position])
                 .withIconTint(color(color.gray))
+                .withTextTint(color(color.black))
+                .withSelectedIconTint(color(color.gray))
+                .withSelectedTextTint(color(color.black));
+    }
+    private DrawerItem createItemForLogout(int position) {
+        return new SimpleItem(screenIcons[position], screenTitles[position],1)
+                .withIconTint(color(color.orange))
                 .withTextTint(color(color.black))
                 .withSelectedIconTint(color(color.gray))
                 .withSelectedTextTint(color(color.black));
@@ -130,29 +178,42 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
     }
 
 
+
     @Override
     public void onItemSelected(int position) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        DashboardFragment dashboardFragment = new DashboardFragment();
+        //transaction.replace(R.id.container, dashboardFragment);
 
-        if(position == POS_DASHBOARD){
-            DashboardFragment dashboardFragment = new DashboardFragment();
+
+        // Set the listener for DashboardFragment
+        if(position == POS_MY_ORDERS){
+            dashboardFragment.attachDashboardListener(this);
             transaction.replace(R.id.container, dashboardFragment);
         }
         else if(position == POS_MY_PROFILE){
             MyProfileFragment myProfileFragment = new MyProfileFragment();
             transaction.replace(R.id.container, myProfileFragment);
         }
-        else if(position == POS_NEARBY_RES){
+        else if(position == POS_DELIVERY_ADDRESS){
             NearbyResFragment nearbyResFragment = new NearbyResFragment();
             transaction.replace(R.id.container, nearbyResFragment);
+        }
+        else if(position == POS_PAYMENT_METHODS){
+            SettingsFragment settingsFragment = new SettingsFragment();
+            transaction.replace(R.id.container, settingsFragment);
+        }
+        else if(position == POS_CONTACT_US){
+            AboutUsFragment aboutUsFragment = new AboutUsFragment();
+            transaction.replace(R.id.container, aboutUsFragment);
         }
         else if(position == POS_SETTINGS){
             SettingsFragment settingsFragment = new SettingsFragment();
             transaction.replace(R.id.container, settingsFragment);
         }
-        else if(position == POS_ABOUT_US){
-            AboutUsFragment aboutUsFragment = new AboutUsFragment();
-            transaction.replace(R.id.container, aboutUsFragment);
+        else if(position == POS_HELP){
+            SettingsFragment settingsFragment = new SettingsFragment();
+            transaction.replace(R.id.container, settingsFragment);
         }
         else if(position == POS_LOGOUT){
             finish();
@@ -161,4 +222,39 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         transaction.addToBackStack(null);
         transaction.commit();
     }
+    @Override
+    public void openMenu() {
+        // Implement the logic to open the sliding root navigation menu here
+        // For example:
+        if (slidingRootNav != null) {
+            slidingRootNav.openMenu(true);
+        }
+    }
+    private void updateUI(@Nullable GoogleSignInAccount account) {
+        if (account != null) {
+
+            if (drawerUserName != null) {
+                drawerUserName.setText(account.getDisplayName());
+            }
+            if (drawerUserEmail != null) {
+                drawerUserEmail.setText(account.getEmail());
+            }
+            if (drawerProfilePic != null) {
+                if (account.getPhotoUrl() != null) {
+                    String photoUrl = account.getPhotoUrl().toString();
+
+                    // Load the image using an image loading library like Picasso or Glide
+                    // For example, using Picasso:
+                    Picasso.get().load(photoUrl).into(drawerProfilePic);
+
+                    // If you want to download and display the image manually, you can use:
+                    /* new DownloadImageTask(yourImageView).execute(photoUrl); */
+                }
+            }
+
+
+        } else {
+        }
+    }
+
 }

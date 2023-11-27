@@ -40,7 +40,7 @@ public class DashboardFragment extends Fragment {
     ImageView profilePic;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
-
+    private DashboardListener dashboardListener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DashboardFragmentBinding.inflate(inflater, container, false);
@@ -54,7 +54,16 @@ public class DashboardFragment extends Fragment {
         recyclerViewCards = view.findViewById(R.id.recyclerViewCards);
         address = view.findViewById(R.id.address);
         profilePic = view.findViewById(R.id.profile_image);
+        ImageView vectorImageView = view.findViewById(R.id.vectorImageView);
 
+        vectorImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dashboardListener != null) {
+                    dashboardListener.openMenu();
+                }
+            }
+        });
         ArrayList<MainModel> list = new ArrayList<>();
         list.add(new MainModel(
                 R.drawable.pizza_image,
@@ -135,6 +144,10 @@ public class DashboardFragment extends Fragment {
             updateUI(receivedAccount);
         }
     }
+    // Method to attach the listener to the fragment
+    public void attachDashboardListener(DashboardListener listener) {
+        this.dashboardListener = listener;
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -147,6 +160,9 @@ public class DashboardFragment extends Fragment {
         // [END on_start_sign_in]
     }
     // [START onActivityResult]
+    public interface DashboardListener {
+        void openMenu();
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

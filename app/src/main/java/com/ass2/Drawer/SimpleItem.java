@@ -26,6 +26,10 @@ public class SimpleItem extends DrawerItem<SimpleItem.ViewHolder> {
         this.icon = icon;
         this.title = title;
     }
+    public SimpleItem(Drawable icon, String title, int normalItemIconTintColor) {
+        this.icon = icon;
+        this.title = title;
+    }
 
     @Override
     public ViewHolder createViewHolder(ViewGroup parent) {
