@@ -6,12 +6,14 @@ import static androidx.core.text.SpannableStringBuilderKt.color;
 import static com.ass2.project_smd.R.*;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,6 +31,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
@@ -215,8 +219,9 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
             SettingsFragment settingsFragment = new SettingsFragment();
             transaction.replace(R.id.container, settingsFragment);
         }
-        else if(position == POS_LOGOUT){
-            finish();
+        else if(position == 8){
+            signOut();
+            nagivateToSignInActivity();
         }
         slidingRootNav.closeMenu();
         transaction.addToBackStack(null);
@@ -255,6 +260,20 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
 
         } else {
         }
+    }
+    private void signOut() {
+        gsc.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        nagivateToSignInActivity();
+                    }
+                });
+    }
+    void nagivateToSignInActivity() {
+        Intent intent = new Intent(this, welcome.class);
+        startActivity(intent);
+        finish();
     }
 
 }

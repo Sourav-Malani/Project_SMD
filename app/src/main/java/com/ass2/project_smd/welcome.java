@@ -64,6 +64,7 @@ public class welcome extends AppCompatActivity  {
         gsc = GoogleSignIn.getClient(this, gso);
         // [END build_client]
 
+
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,7 +75,7 @@ public class welcome extends AppCompatActivity  {
 
     // Your existing code for navigation
     void navigateToNextActivity(GoogleSignInAccount account) {
-        Intent intent = new Intent(this, homescreen.class);
+        Intent intent = new Intent(this, nav_bar.class);
         intent.putExtra("googleSignInAccount", account); // Pass the GoogleSignInAccount
         startActivity(intent);
     }
@@ -102,6 +103,17 @@ public class welcome extends AppCompatActivity  {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+
+    private void signOut() {
+        gsc.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        nagivateToSignInActivity();
+                    }
+                });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -118,7 +130,7 @@ public class welcome extends AppCompatActivity  {
             updateUI(account);
         } catch (ApiException e) {
             Log.w("GoogleSignIn", "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -128,7 +140,7 @@ public class welcome extends AppCompatActivity  {
             Log.w("GoogleSignIn", "signInResult:Name=" + account.getDisplayName());
             navigateToNextActivity(account);
         } else {
-            Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
         }
     }
 
