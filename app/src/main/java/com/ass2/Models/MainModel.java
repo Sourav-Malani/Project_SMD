@@ -4,14 +4,15 @@ public class MainModel {
 
     int pizzaImage,FoodId;
     String Name, Price, Description, Category;
-
-    public MainModel(int pizzaimage, String name, String price, String description, String category, int foodId) {
+    private int viewType;
+    public MainModel(int pizzaimage, String name, String price, String description, String category, int foodId,int viewType) {
         pizzaImage = pizzaimage;
         Name = name;
         Price = price;
         Description = description;
         Category = category;
         FoodId = foodId;
+        this.viewType = viewType;
     }
 
     public int getImage() {
@@ -40,6 +41,9 @@ public class MainModel {
 
     public String getDescription() {
         return Description;
+    }
+    public int getViewType() {
+        return viewType;
     }
 
     public void setDescription(String description) {

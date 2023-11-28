@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".homescreen"
-    android:id="@+id/homescreen"
+    tools:tools="@layout/dashboard_fragment"
+    android:id="@+id/DashboardFragment"
     >
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
@@ -191,7 +191,7 @@
     <RelativeLayout
         android:layout_width="120dp"
         android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/homescreen"
+        app:layout_constraintTop_toBottomOf="@+id/DashboardFragment"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="20dp"
         android:layout_marginTop="-60dp">

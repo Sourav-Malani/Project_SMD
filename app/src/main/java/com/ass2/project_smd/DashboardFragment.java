@@ -71,7 +71,8 @@ public class DashboardFragment extends Fragment {
                 "$ 10",
                 "Choose From Our Options Of Designa And Make Your Own Pizza.",
                 "pizza",
-                1));
+                1,
+                0));
 
         list.add(new MainModel(
                 R.drawable.pizza2,
@@ -79,56 +80,64 @@ public class DashboardFragment extends Fragment {
                 "Rs 1400",
                 "crisp capsicum, succulent mushrooms and fresh tomatoes",
                 "pizza",
-                2));
+                2,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza3,
                 "Peppy Paneer",
                 "Rs. 5900",
                 "Chunky paneer with crisp capsicum and spicy red pepperr",
                 "pizza",
-                3));
+                3,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza4,
                 "Mexican Green Wave",
                 "Rs. 1400",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
-                4));
+                4,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza5,
                 "Peppy Paneer",
                 "$ 15",
                 "Chunky paneer with crisp capsicum and spicy red pepper",
                 "pizza",
-                5));
+                5,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza6,
                 "Mexican Green Wave",
                 "Rs 1700",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
-                6));
+                6,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza6,
                 "Mexican Green Wave",
                 "Rs 1700",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
-                7));
+                7,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza6,
                 "Mexican Green Wave",
                 "Rs 1700",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
-                8));
+                8,
+                1));
         list.add(new MainModel(
                 R.drawable.pizza6,
                 "Mexican Green Wave",
                 "Rs 1700",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
-                9));
+                9,
+                1));
         MainAdapter adapter = new MainAdapter(list, requireActivity());
         recyclerViewCards.setAdapter(adapter);
 

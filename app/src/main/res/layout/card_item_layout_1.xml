@@ -58,6 +58,7 @@
         </FrameLayout>
         <!-- Button -->
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_createNow"
             android:layout_width="111dp"
             android:layout_height="35dp"
             android:layout_gravity="bottom|center_horizontal"
