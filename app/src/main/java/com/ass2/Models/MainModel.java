@@ -15,13 +15,8 @@ public class MainModel {
         this.viewType = viewType;
     }
 
-    public int getImage() {
-        return pizzaImage;
-    }
 
-    public void setImage(int pizzaimage) {
-        pizzaImage = pizzaimage;
-    }
+
 
     public String getName() {
         return Name;
@@ -44,6 +39,13 @@ public class MainModel {
     }
     public int getViewType() {
         return viewType;
+    }
+    public int getPizzaImage() {
+        return pizzaImage;
+    }
+
+    public void setPizzaImage(int pizzaImage) {
+        this.pizzaImage = pizzaImage;
     }
 
     public void setDescription(String description) {

@@ -8,13 +8,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ass2.Helper.DBHelper;
 import com.ass2.Models.MainModel;
 import com.ass2.project_smd.R;
+import com.ass2.project_smd.cart;
 import com.ass2.project_smd.create_your_own_pizza;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import java.util.ArrayList;
 
@@ -24,10 +31,13 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<MainModel> list;
     private Context context;
-
+    final DBHelper helper; // Remove the initialization here
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
     public MainAdapter(ArrayList<MainModel> list, Context context) {
         this.list = list;
         this.context = context;
+        this.helper = new DBHelper(context); // Initialize DBHelper using the provided context
     }
 
     @Override
@@ -52,7 +62,8 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MainModel model = list.get(position);
+        final MainModel model = list.get(position);
+
 
         if (holder instanceof Layout1ViewHolder) {
             ((Layout1ViewHolder) holder).bindLayout1Data(model);
@@ -69,6 +80,44 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         } else if (holder instanceof Layout2ViewHolder) {
             ((Layout2ViewHolder) holder).bindLayout2Data(model);
+            ((Layout2ViewHolder) holder).pizzaImage.setImageResource(model.getPizzaImage());
+            ((Layout2ViewHolder) holder).pizzaName.setText(model.getName());
+            ((Layout2ViewHolder) holder).pizzaPrice.setText(model.getPrice());
+            ((Layout2ViewHolder) holder).pizzaDescription.setText(model.getDescription());
+
+            if (model.getViewType() == VIEW_TYPE_LAYOUT_2) {
+                ((Layout2ViewHolder) holder).addButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Handle button click for card_item_layout_2.xml here
+                        // You can perform actions like starting a new activity
+                        boolean isInserted = helper.insertOrder(
+                                model.getName(),
+                                "abc@gmail.com",
+                                model.getPrice(),
+                                model.getPizzaImage(),
+                                model.getDescription(),
+                                model.getName(),
+                                1
+                        );
+                        if(isInserted){
+                            Toast.makeText(context, "Data Inserted", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(context, "Data Not Inserted", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                        Intent intent = new Intent(context, cart.class);
+//                        intent.putExtra("pizzaName",model.getName());
+//                        intent.putExtra("pizzaImage",model.getPizzaImage());
+//                        intent.putExtra("pizzaPrice",model.getPrice());
+//                        intent.putExtra("pizzaDescription",model.getDescription());
+
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }
     }
 
@@ -93,7 +142,7 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bindLayout1Data(MainModel model) {
             // Bind data for layout 1
-            pizzaImage.setImageResource(model.getImage());
+            pizzaImage.setImageResource(model.getPizzaImage());
             pizzaText.setText(model.getName());
             pizzaDescription.setText(model.getDescription());
         }
@@ -104,21 +153,23 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ImageView pizzaImage;
         TextView pizzaName, pizzaPrice, pizzaDescription;
 
+        Button addButton;
+
         Layout2ViewHolder(View itemView) {
             super(itemView);
             pizzaImage = itemView.findViewById(R.id.pizzaImage);
             pizzaName = itemView.findViewById(R.id.pizzaName);
             pizzaPrice = itemView.findViewById(R.id.pizzaPrice);
             pizzaDescription = itemView.findViewById(R.id.pizzaDescription);
+            addButton = itemView.findViewById(R.id.btn_add);
         }
 
         void bindLayout2Data(MainModel model) {
             // Bind data for layout 2
-            pizzaImage.setImageResource(model.getImage());
+            pizzaImage.setImageResource(model.getPizzaImage());
             pizzaName.setText(model.getName());
             pizzaPrice.setText(model.getPrice());
             pizzaDescription.setText(model.getDescription());
-
         }
     }
 }
