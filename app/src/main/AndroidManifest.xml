@@ -15,6 +15,11 @@
         android:theme="@style/Theme.Project_SMD"
         tools:targetApi="31">
         <activity
+            android:name=".create_your_own_step_2"
+            android:exported="false"
+            android:label="@string/title_activity_create_your_own_step2"
+            android:theme="@style/Theme.Project_SMD" />
+        <activity
             android:name=".create_your_own_pizza"
             android:exported="false" />
         <activity

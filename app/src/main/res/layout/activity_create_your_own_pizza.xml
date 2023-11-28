@@ -388,18 +388,18 @@
     android:orientation="vertical"
     app:layout_constraintBottom_toBottomOf="parent"
     >
+
     <Button
         android:id="@+id/buttonNext"
         android:layout_width="339dp"
         android:layout_height="66dp"
-        android:textAlignment="center"
-        android:text="NEXT"
-        android:textSize="19sp"
-        android:fontFamily="@font/signika_semibold"
-        android:backgroundTint="#F6752C"
-        android:textColor="#FFFFFF"
         android:layout_centerInParent="true"
-        />
+        android:backgroundTint="#F6752C"
+        android:fontFamily="@font/signika_semibold"
+        android:text="NEXT"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="19sp" />
 </RelativeLayout>
 
 

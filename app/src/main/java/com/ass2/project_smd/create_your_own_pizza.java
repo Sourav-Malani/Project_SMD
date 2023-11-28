@@ -1,5 +1,6 @@
 package com.ass2.project_smd;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class create_your_own_pizza extends AppCompatActivity {
 
-    Button back;
+    Button back,buttonNext;
     RelativeLayout selectedSize, selectedCrust;
     RelativeLayout[] sizeOptions, crustOptions;
     ImageButton pizzaImage1, pizzaImage2;
@@ -23,6 +24,7 @@ public class create_your_own_pizza extends AppCompatActivity {
         setContentView(R.layout.activity_create_your_own_pizza);
 
         back = findViewById(R.id.back);
+        buttonNext = findViewById(R.id.buttonNext);
         selectedSize = findViewById(R.id.create_your_own_rectangle_selected_1_rl);
         selectedCrust = findViewById(R.id.create_your_own_rectangle_crust_selected_1_rl);
         pizzaImage1 = findViewById(R.id.pizzaImage1);
@@ -74,6 +76,11 @@ public class create_your_own_pizza extends AppCompatActivity {
         back.setOnClickListener(v -> {
             // Navigate to the previous activity
             finish();
+        });
+        buttonNext.setOnClickListener(v -> {
+            // Navigate to the create_your_own_step_2
+            Intent intent = new Intent(this, create_your_own_step_2.class);
+            startActivity(intent);
         });
     }
 
