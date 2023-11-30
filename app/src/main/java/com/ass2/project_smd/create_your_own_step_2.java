@@ -34,9 +34,11 @@ public class create_your_own_step_2 extends AppCompatActivity {
     private boolean isLeftHalfSelected = true; // Variable to track if the left half is selected
     private int selectedSauceIndexLeft = -1; // Variable to store the selected sauce index
     private int selectedSauceIndexRight = -1; // Variable to store the selected sauce index
+
     // Variables to store selected toppings for left and right halves
     private boolean[] selectedToppingsLeft = new boolean[10];
     private boolean[] selectedToppingsRight = new boolean[10];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +92,18 @@ public class create_your_own_step_2 extends AppCompatActivity {
         mushroomText = findViewById(R.id.mushroom_text);
         tunaText = findViewById(R.id.tuna_text);
 
-        pineappleRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pineappleRl, pineappleText, true));
-        jalapenosRl.setOnClickListener(view -> toggleToppingsSelectionSecond(jalapenosRl, jalapenosText, true));
-        sweetCornRl.setOnClickListener(view -> toggleToppingsSelectionSecond(sweetCornRl, sweetCornText, true));
-        pepperoniRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pepperoniRl, pepperoniText, true));
-        redOnionsRl.setOnClickListener(view -> toggleToppingsSelectionSecond(redOnionsRl, redOnionsText, true));
-        anchoviesRl.setOnClickListener(view -> toggleToppingsSelectionSecond(anchoviesRl, anchoviesText, true));
-        groundBeefRl.setOnClickListener(view -> toggleToppingsSelectionSecond(groundBeefRl, groundBeefText, true));
-        chickenTikkaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(chickenTikkaRl, chickenTikkaText, true));
-        mushroomRl.setOnClickListener(view -> toggleToppingsSelectionSecond(mushroomRl, mushroomText, true));
-        tunaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(tunaRl, tunaText, true));
+
+
+        pineappleRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pineappleRl, pineappleText, isLeftHalfSelected));
+        jalapenosRl.setOnClickListener(view -> toggleToppingsSelectionSecond(jalapenosRl, jalapenosText, isLeftHalfSelected));
+        sweetCornRl.setOnClickListener(view -> toggleToppingsSelectionSecond(sweetCornRl, sweetCornText, isLeftHalfSelected));
+        pepperoniRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pepperoniRl, pepperoniText, isLeftHalfSelected));
+        redOnionsRl.setOnClickListener(view -> toggleToppingsSelectionSecond(redOnionsRl, redOnionsText, isLeftHalfSelected));
+        anchoviesRl.setOnClickListener(view -> toggleToppingsSelectionSecond(anchoviesRl, anchoviesText, isLeftHalfSelected));
+        groundBeefRl.setOnClickListener(view -> toggleToppingsSelectionSecond(groundBeefRl, groundBeefText, isLeftHalfSelected));
+        chickenTikkaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(chickenTikkaRl, chickenTikkaText, isLeftHalfSelected));
+        mushroomRl.setOnClickListener(view -> toggleToppingsSelectionSecond(mushroomRl, mushroomText, isLeftHalfSelected));
+        tunaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(tunaRl, tunaText, isLeftHalfSelected));
 
 
         floating_cart_rl = findViewById(R.id.floating_cart_rl);
@@ -151,35 +155,54 @@ public class create_your_own_step_2 extends AppCompatActivity {
             // Navigate to the previous activity
             finish();
         });
-        priceTextView1.setOnClickListener(view -> toggleSauceSelection(1));
-        priceTextView2.setOnClickListener(view -> toggleSauceSelection(2));
-        priceTextView3.setOnClickListener(view -> toggleSauceSelection(3));
+
+
+        priceTextView1.setOnClickListener(view -> toggleSauceSelection(0,isLeftHalfSelected));
+        priceTextView2.setOnClickListener(view -> toggleSauceSelection(1,isLeftHalfSelected));
+        priceTextView3.setOnClickListener(view -> toggleSauceSelection(2,isLeftHalfSelected));
     }
 
-    private void toggleToppingsSelection(boolean isLeftSelected) {
+    private void toggleToppingsSelectionLeft(RelativeLayout selectedLayout, TextView selectedTextView) {
+        boolean isSelected = selectedLayout.getTag() != null && (boolean) selectedLayout.getTag();
+        int index = getToppingIndex(selectedLayout);
 
-        isLeftHalfSelected = isLeftSelected;
-        if (isLeftSelected) {
-            leftHalfPizza.setAlpha(1.0f);
-            rightHalfPizza.setAlpha(0.5f);
-            txt_right_half_pizza.setTextColor(Color.parseColor("#24262F"));
-            txt_left_half_pizza.setTextColor(Color.parseColor("#FE724C"));
-
-            //selectedSauceIndexLeft = 1; // Set the default sauce(BBQ) for left half
-
+        if (isSelected) {
+            selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
+            selectedTextView.setTextColor(Color.parseColor("#24262F"));
+            selectedTextView.setAlpha(0.5f);
+            selectedLayout.setTag(false);
+            selectedToppingsLeft[index] = false;
         } else {
-            leftHalfPizza.setAlpha(0.5f);
-            rightHalfPizza.setAlpha(1.0f);
-            txt_left_half_pizza.setTextColor(Color.parseColor("#24262F"));
-            txt_right_half_pizza.setTextColor(Color.parseColor("#FE724C"));
-
-            //selectedSauceIndexRight = 1; // Set the default sauce(BBQ) for right half
+            selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
+            selectedTextView.setTextColor(Color.parseColor("#FE724C"));
+            selectedTextView.setAlpha(1.0f);
+            selectedLayout.setTag(true);
+            selectedToppingsLeft[index] = true;
         }
     }
-    private void toggleToppingsSelectionSecond(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected) {
-        boolean isSelected = selectedLayout.getTag() != null && (boolean) selectedLayout.getTag();
-        int index = -1;
 
+    private void toggleToppingsSelectionRight(RelativeLayout selectedLayout, TextView selectedTextView) {
+        boolean isSelected = selectedLayout.getTag() != null && (boolean) selectedLayout.getTag();
+        int index = getToppingIndex(selectedLayout);
+
+        if (isSelected) {
+            selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
+            selectedTextView.setTextColor(Color.parseColor("#24262F"));
+            selectedTextView.setAlpha(0.5f);
+            selectedLayout.setTag(false);
+            selectedToppingsRight[index] = false;
+        } else {
+            selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
+            selectedTextView.setTextColor(Color.parseColor("#FE724C"));
+            selectedTextView.setAlpha(1.0f);
+            selectedLayout.setTag(true);
+            selectedToppingsRight[index] = true;
+        }
+    }
+    // Method to get topping index based on the selected layout ID
+
+    private int getToppingIndex(RelativeLayout selectedLayout) {
+        int index =-1;
         if (selectedLayout.getId() == R.id.pineaple_rl) index = 0; // Pineapple
         else if (selectedLayout.getId() == R.id.jalapenos_rl) index = 1; // Jalapenos
         else if (selectedLayout.getId() == R.id.sweet_corn_rl) index = 2; // Sweet Corn
@@ -190,76 +213,109 @@ public class create_your_own_step_2 extends AppCompatActivity {
         else if (selectedLayout.getId() == R.id.chicken_tikka_rl) index = 7; // Chicken Tikka
         else if (selectedLayout.getId() == R.id.mushroom_rl) index = 8; // Mushroom
         else if (selectedLayout.getId() == R.id.tuna_rl) index = 9; // Tuna
-
-        if (index != -1) {
-            if (isLeftHalfSelected) {
-                // For the left half of the pizza
-                if (isSelected) {
-                    // Deselect
-                    selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
-                    selectedTextView.setTextColor(Color.parseColor("#24262F"));
-                    selectedTextView.setAlpha(0.5f);
-                    selectedLayout.setTag(false); // Set tag to indicate unselected state
-                    selectedToppingsLeft[index] = false; // Update the selectedToppingsLeft array for the respective topping
-                } else {
-                    // Select
-                    selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
-                    selectedTextView.setTextColor(Color.parseColor("#FE724C"));
-                    selectedTextView.setAlpha(1.0f);
-                    selectedLayout.setTag(true); // Set tag to indicate selected state
-                    selectedToppingsLeft[index] = true; // Update the selectedToppingsLeft array for the respective topping
-                }
-            } else {
-                // For the right half of the pizza
-                if (isSelected) {
-                    // Deselect
-                    selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
-                    selectedTextView.setTextColor(Color.parseColor("#24262F"));
-                    selectedTextView.setAlpha(0.5f);
-                    selectedLayout.setTag(false); // Set tag to indicate unselected state
-                    selectedToppingsRight[index] = false; // Update the selectedToppingsRight array for the respective topping
-                } else {
-                    // Select
-                    selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
-                    selectedTextView.setTextColor(Color.parseColor("#FE724C"));
-                    selectedTextView.setAlpha(1.0f);
-                    selectedLayout.setTag(true); // Set tag to indicate selected state
-                    selectedToppingsRight[index] = true; // Update the selectedToppingsRight array for the respective topping
-                }
-            }
-        }
+        return index;
     }
 
 
+    private void toggleToppingsSelection(boolean isLeftSelected) {
 
-    private void toggleSauceSelection(int sauceNumber) {
+        isLeftHalfSelected = isLeftSelected;
+        if (isLeftSelected) {
+            leftHalfPizza.setAlpha(1.0f);
+            rightHalfPizza.setAlpha(0.5f);
+            txt_right_half_pizza.setTextColor(Color.parseColor("#24262F"));
+            txt_left_half_pizza.setTextColor(Color.parseColor("#FE724C"));
+
+            toggleSauceSelectionForHalf(selectedSauceIndexLeft, true); // Update UI for left half sauce
+
+        } else {
+            leftHalfPizza.setAlpha(0.5f);
+            rightHalfPizza.setAlpha(1.0f);
+            txt_left_half_pizza.setTextColor(Color.parseColor("#24262F"));
+            txt_right_half_pizza.setTextColor(Color.parseColor("#FE724C"));
+
+            toggleSauceSelectionForHalf(selectedSauceIndexRight, false); // Update UI for right half sauce
+        }
+    }
+
+    // Inside toggleToppingsSelectionSecond(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected) method
+    private void toggleToppingsSelectionSecond(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected) {
+        if (isLeftHalfSelected) {
+            toggleToppingsSelectionLeft(selectedLayout, selectedTextView);
+        } else {
+            toggleToppingsSelectionRight(selectedLayout, selectedTextView);
+        }
+    }
+    // Inside toggleSauceSelectionForHalf(int sauceNumber, boolean isLeftHalfSelected) method
+    private void toggleSauceSelectionForHalf(int sauceNumber, boolean isLeftHalfSelected) {
         switch (sauceNumber) {
+            case 0:
+                setSauceSelection(create_your_own_rectangle_selected_1_rl, priceTextView1, isLeftHalfSelected);
+                updateSauceIndex(0, isLeftHalfSelected);
+                break;
             case 1:
-                setSauceSelection(create_your_own_rectangle_selected_1_rl, priceTextView1);
-                updateSauceIndex(0); // Assuming sauceNumber 1 corresponds to the first sauce option
+                setSauceSelection(create_your_own_rectangle_selected_2_rl, priceTextView2, isLeftHalfSelected);
+                updateSauceIndex(1, isLeftHalfSelected);
                 break;
             case 2:
-                setSauceSelection(create_your_own_rectangle_selected_2_rl, priceTextView2);
-                updateSauceIndex(1); // Assuming sauceNumber 2 corresponds to the second sauce option
-                break;
-            case 3:
-                setSauceSelection(create_your_own_rectangle_selected_3_rl, priceTextView3);
-                updateSauceIndex(2); // Assuming sauceNumber 3 corresponds to the third sauce option
+                setSauceSelection(create_your_own_rectangle_selected_3_rl, priceTextView3, isLeftHalfSelected);
+                updateSauceIndex(2, isLeftHalfSelected);
                 break;
         }
     }
 
-    private void updateSauceIndex(int sauceIndex) {
+    private void setSauceSelectionForHalf(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected, int selectedSauceIndex) {
+        // Reset all sauces to unselected state
+        create_your_own_rectangle_selected_1_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
+        create_your_own_rectangle_selected_2_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
+        create_your_own_rectangle_selected_3_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
+
+        // Reset text colors and alpha for all sauce options
+        priceTextView1.setTextColor(Color.parseColor("#24262F"));
+        priceTextView2.setTextColor(Color.parseColor("#24262F"));
+        priceTextView3.setTextColor(Color.parseColor("#24262F"));
+
+        priceTextView1.setAlpha(0.5f);
+        priceTextView2.setAlpha(0.5f);
+        priceTextView3.setAlpha(0.5f);
+
+        // Update the selected sauce UI based on the selected index
+        switch (selectedSauceIndex) {
+            case 0:
+                selectedLayout = create_your_own_rectangle_selected_1_rl;
+                selectedTextView = priceTextView1;
+                break;
+            case 1:
+                selectedLayout = create_your_own_rectangle_selected_2_rl;
+                selectedTextView = priceTextView2;
+                break;
+            case 2:
+                selectedLayout = create_your_own_rectangle_selected_3_rl;
+                selectedTextView = priceTextView3;
+                break;
+        }
+
+        // Set the selected sauce UI
+        selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
+        selectedTextView.setTextColor(Color.parseColor("#FE724C"));
+        selectedTextView.setAlpha(1.0f);
+    }
+    // Inside toggleSauceSelection(int sauceNumber, boolean isLeftHalfSelected) method
+    private void toggleSauceSelection(int sauceNumber, boolean isLeftHalfSelected) {
+        if (isLeftHalfSelected) {
+            toggleSauceSelectionForHalf(sauceNumber, true);
+        } else {
+            toggleSauceSelectionForHalf(sauceNumber, false);
+        }
+    }
+    private void updateSauceIndex(int sauceIndex, boolean isLeftHalfSelected) {
         if (isLeftHalfSelected) {
             selectedSauceIndexLeft = sauceIndex;
         } else {
             selectedSauceIndexRight = sauceIndex;
         }
     }
-
-
-
-    private void setSauceSelection(RelativeLayout selectedLayout, TextView selectedTextView) {
+    private void setSauceSelection(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected) {
         create_your_own_rectangle_selected_1_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
         create_your_own_rectangle_selected_2_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
         create_your_own_rectangle_selected_3_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
@@ -276,6 +332,20 @@ public class create_your_own_step_2 extends AppCompatActivity {
         priceTextView3.setAlpha(0.5f);
 
         selectedTextView.setAlpha(1.0f);
+
+        // Update sauce index based on selected half
+        int sauceIndex = getSauceIndex(selectedLayout);
+        updateSauceIndex(sauceIndex, isLeftHalfSelected);
     }
 
-}
+    // Method to get sauce index based on the selected layout ID
+
+    private int getSauceIndex(RelativeLayout selectedLayout) {
+        int index = -1;
+        if (selectedLayout.getId() == R.id.create_your_own_rectangle_selected_1_rl) index = 0; // Pineapple
+        else if (selectedLayout.getId() == R.id.create_your_own_rectangle_selected_2_rl) index = 1; // Jalapenos
+        else if (selectedLayout.getId() == R.id.create_your_own_rectangle_selected_3_rl) index = 2; // Sweet Corn
+
+        return index;
+        }
+    }
