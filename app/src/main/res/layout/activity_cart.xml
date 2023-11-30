@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".cart">
-    <ImageView
+    <ImageButton
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,123 +13,34 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/back" />
+        android:background="@drawable/back" />
 
     <TextView
         android:id="@+id/cart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/sofia_pro_regular"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/sofia_pro_medium"
         android:gravity="center_horizontal"
         android:text="Cart"
-        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textColor="#111719"
+        android:textSize="20sp"
         app:layout_constraintRight_toRightOf="@+id/back"
         app:layout_constraintStart_toEndOf="@+id/back"
         app:layout_constraintTop_toTopOf="@+id/back" />
-    <RelativeLayout
-        android:id="@+id/firstCartItem"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cartRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/cart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal"
         android:layout_marginTop="25dp"
-
-        >
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="71dp"
-            android:layout_marginBottom="33dp"
-            android:fontFamily="@font/sofia_pro_semibold"
-            android:textSize="16sp"
-            android:text="02" />
-
-        <ImageView
-            android:id="@+id/rectangle_1"
-            android:layout_width="82dp"
-            android:layout_height="82dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="22dp"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:background="@drawable/cart_pizza1"
-            />
-
-        <TextView
-            android:id="@+id/red_n_hot_p"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/sofia_pro_regular"
-            android:gravity="top"
-            android:text="Red and Spicy"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-        <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentRight="true"
-            android:fontFamily="@font/sofia_pro_regular"
-            android:gravity="top"
-            android:text="Red and Spicy"
-            android:background="@drawable/red_cross"
-            android:layout_marginRight="5dp"/>
-
-        <TextView
-            android:id="@+id/red_n_hot_p_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/red_n_hot_p"
-            android:text="Spicy chicken, beef"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/sofiapro_light"
-            />
-
-        <TextView
-            android:id="@+id/red_n_hot_p_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/red_n_hot_p_desc"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="147dp"
-            android:layout_marginTop="-45dp"
-            android:text="$14.1"
-            android:textAppearance="@style/cart_price"
-            android:textColor="#FE724C"
-            android:textSize="14sp" />
-
-        <View
-            android:id="@+id/group_17841"
-            android:layout_width="58dp"
-            android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="267dp"
-            android:layout_marginTop="41dp"
-            android:background="@drawable/group_17841" />
-
-        <View
-            android:id="@+id/group_17840"
-            android:layout_width="58dp"
-            android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="346dp"
-            android:layout_marginTop="34dp"
-            android:background="@drawable/group_17840" />
-
-    </RelativeLayout>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        />
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="200dp"
@@ -139,10 +50,10 @@
         android:textSize="20sp"
         android:backgroundTint="@color/orange"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/firstCartItem"
+        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="450dp"
+        android:layout_marginTop="-80dp"
 
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

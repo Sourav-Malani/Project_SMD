@@ -18,6 +18,11 @@ public class create_your_own_pizza extends AppCompatActivity {
     RelativeLayout selectedSize, selectedCrust;
     RelativeLayout[] sizeOptions, crustOptions;
     ImageButton pizzaImage1, pizzaImage2;
+
+    // Variables to store selected size and crust
+    private int selectedSizeIndex = -1;
+    private int selectedCrustIndex = -1;
+    private int selectedPizzaToppingsImageIndex = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +41,7 @@ public class create_your_own_pizza extends AppCompatActivity {
             pizzaImage2.setBackgroundResource(R.drawable.create_your_own_pizza2_unselected);
 
             // Perform actions based on pizzaImage1 selection
-            // ...
+            selectedPizzaToppingsImageIndex = 0;
         });
 
         pizzaImage2.setOnClickListener(v -> {
@@ -45,7 +50,7 @@ public class create_your_own_pizza extends AppCompatActivity {
             pizzaImage1.setBackgroundResource(R.drawable.create_your_own_pizza1_unselected);
 
             // Perform actions based on pizzaImage2 selection
-            // ...
+            selectedPizzaToppingsImageIndex = 1;
         });
         // Initialize size options
         sizeOptions = new RelativeLayout[]{
@@ -80,8 +85,36 @@ public class create_your_own_pizza extends AppCompatActivity {
         buttonNext.setOnClickListener(v -> {
             // Navigate to the create_your_own_step_2
             Intent intent = new Intent(this, create_your_own_step_2.class);
+            // Set default values if no size or crust is selected
+            if (selectedSizeIndex == -1) {
+                selectedSizeIndex = 0; // Set the default size index to the first item
+            }
+            if (selectedCrustIndex == -1) {
+                selectedCrustIndex = 0; // Set the default crust index to the first item
+            }
+            if (selectedPizzaToppingsImageIndex == -1) {
+                selectedPizzaToppingsImageIndex = 0; // Set the default pizza toppings image index to the first item
+            }
+            //send all data to next activity.
+            // Pass the selected size and crust data to the next activity
+            intent.putExtra("SELECTED_SIZE", selectedSizeIndex);
+            intent.putExtra("SELECTED_CRUST", selectedCrustIndex);
+            intent.putExtra("SELECTED_PIZZA_TOPPINGS_IMAGE", selectedPizzaToppingsImageIndex);
+
+
             startActivity(intent);
         });
+        // Check if there are no selected options and set defaults
+        if (selectedSizeIndex == -1) {
+            selectedSizeIndex = 0; // Set the default size index to the first item
+            // Highlight the default size visually
+            onSizeOptionSelected(selectedSizeIndex);
+        }
+        if (selectedCrustIndex == -1) {
+            selectedCrustIndex = 0; // Set the default crust index to the first item
+            // Highlight the default crust visually
+            onCrustOptionSelected(selectedCrustIndex);
+        }
     }
 
     private void resetSizeOptions() {
@@ -138,6 +171,9 @@ public class create_your_own_pizza extends AppCompatActivity {
     private void onSizeOptionSelected(int selectedSizeIndex) {
         // Reset all size options to their default state
         resetSizeOptions();
+        // Store the selected size index
+        this.selectedSizeIndex = selectedSizeIndex;
+
         for (int i = 0; i < sizeOptions.length; i++) {
             if (i == selectedSizeIndex) {
                 sizeOptions[i].setBackgroundResource(R.drawable.create_your_own_rectangle_selected);
@@ -159,6 +195,9 @@ public class create_your_own_pizza extends AppCompatActivity {
     private void onCrustOptionSelected(int selectedCrustIndex) {
         // Reset all crust options to their default state
         resetCrustOptions();
+        // Store the selected crust index
+        this.selectedCrustIndex = selectedCrustIndex;
+
         for (int i = 0; i < crustOptions.length; i++) {
             if (i == selectedCrustIndex) {
                 crustOptions[i].setBackgroundResource(R.drawable.create_your_own_rectangle_crust_selected);

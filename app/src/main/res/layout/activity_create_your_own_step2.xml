@@ -265,7 +265,7 @@
             android:id="@+id/pineaple_rl"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="@drawable/create_your_own_rectangle_selected"
+            android:background="@drawable/create_your_own_rectangle_unselected"
             android:layout_weight="1"
             android:layout_margin="10dp"
             >
@@ -277,8 +277,9 @@
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/signika_semibold"
                 android:text="Pineapple"
-                android:textColor="@color/orange"
-                android:textSize="15sp">
+                android:textColor="@color/dark"
+                android:textSize="15sp"
+                android:alpha="0.5">
 
             </TextView>
         </RelativeLayout>
@@ -444,7 +445,7 @@
             android:id="@+id/chicken_tikka_rl"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="@drawable/create_your_own_rectangle_selected"
+            android:background="@drawable/create_your_own_rectangle_unselected"
             android:layout_weight="1"
             android:layout_margin="10dp"
             >
@@ -456,8 +457,9 @@
                 android:layout_centerInParent="true"
                 android:text="Chicken Tikka"
                 android:fontFamily="@font/signika_semibold"
-                android:textColor="@color/orange"
-                android:textSize="15sp">
+                android:textColor="@color/dark"
+                android:textSize="15sp"
+                android:alpha="0.5">
 
             </TextView>
         </RelativeLayout>
@@ -500,7 +502,7 @@
             android:id="@+id/tuna_rl"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="@drawable/create_your_own_rectangle_selected"
+            android:background="@drawable/create_your_own_rectangle_unselected"
             android:layout_margin="10dp"
             >
 
@@ -511,8 +513,9 @@
                 android:text="Tuna"
                 android:fontFamily="@font/signika_semibold"
                 android:textSize="15sp"
-                android:textColor="@color/orange"
+                android:textColor="@color/dark"
                 android:layout_centerInParent="true"
+                android:alpha="0.5"
 
                 ></TextView>
         </RelativeLayout>
