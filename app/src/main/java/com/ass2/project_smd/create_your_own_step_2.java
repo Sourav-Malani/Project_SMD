@@ -1,6 +1,7 @@
 package com.ass2.project_smd;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -12,6 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ass2.Helper.CartDBHelper;
+import com.ass2.Models.CartModel;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class create_your_own_step_2 extends AppCompatActivity {
@@ -27,6 +35,7 @@ public class create_your_own_step_2 extends AppCompatActivity {
     private RelativeLayout pineappleRl, jalapenosRl, sweetCornRl, pepperoniRl, redOnionsRl, anchoviesRl, groundBeefRl, chickenTikkaRl, mushroomRl, tunaRl;
     private TextView pineappleText, jalapenosText, sweetCornText, pepperoniText, redOnionsText, anchoviesText, groundBeefText, chickenTikkaText, mushroomText, tunaText;
 
+    private TextView txt_cartPrice;
     private int selectedSizeIndex = -1;
     private int selectedCrustIndex = -1;
     private int selectedPizzaToppingsImageIndex = -1;
@@ -34,11 +43,11 @@ public class create_your_own_step_2 extends AppCompatActivity {
     private boolean isLeftHalfSelected = true; // Variable to track if the left half is selected
     private int selectedSauceIndexLeft = -1; // Variable to store the selected sauce index
     private int selectedSauceIndexRight = -1; // Variable to store the selected sauce index
-
     // Variables to store selected toppings for left and right halves
-    private boolean[] selectedToppingsLeft = new boolean[10];
-    private boolean[] selectedToppingsRight = new boolean[10];
+    private final boolean[] selectedToppingsLeft = new boolean[10];
+    private final boolean[] selectedToppingsRight = new boolean[10];
 
+    ArrayList<CartModel> cartList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +78,8 @@ public class create_your_own_step_2 extends AppCompatActivity {
         create_your_own_rectangle_selected_1_rl = findViewById(R.id.create_your_own_rectangle_selected_1_rl);
         create_your_own_rectangle_selected_2_rl = findViewById(R.id.create_your_own_rectangle_selected_2_rl);
         create_your_own_rectangle_selected_3_rl = findViewById(R.id.create_your_own_rectangle_selected_3_rl);
+        txt_cartPrice = findViewById(R.id.add_to_cart_floating_price_text);
+
 
         pineappleRl = findViewById(R.id.pineaple_rl);
         jalapenosRl = findViewById(R.id.jalapenos_rl);
@@ -105,35 +116,59 @@ public class create_your_own_step_2 extends AppCompatActivity {
         mushroomRl.setOnClickListener(view -> toggleToppingsSelectionSecond(mushroomRl, mushroomText, isLeftHalfSelected));
         tunaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(tunaRl, tunaText, isLeftHalfSelected));
 
+        CartDBHelper dbHelper = new CartDBHelper(this);
+        ArrayList<CartModel> cartItems = dbHelper.getAllCartItems();
+
+        double totalPrice = 0.0;
+
+        for (CartModel cartItem : cartItems) {
+            // Assuming the price is stored as a String and needs conversion to double
+            double itemPrice = Double.parseDouble(cartItem.getItemPrice());
+            totalPrice += itemPrice;
+            //Toast.makeText(this, "Total Price: " + totalPrice, Toast.LENGTH_SHORT).show();
+            txt_cartPrice.setText(String.format(Locale.getDefault(), "£%.2f", totalPrice));
+        }
 
         floating_cart_rl = findViewById(R.id.floating_cart_rl);
 
         floating_cart_rl.setOnClickListener(view -> {
             // Navigate to the cart activity
-            Intent intent = new Intent(this, cart.class);
+            //Intent intent = new Intent(this, cart.class);
 
-            if (selectedPizzaToppingsImageIndex == -1) {
-                selectedPizzaToppingsImageIndex = 0; // Set the default size index to the first item
+            if (selectedPizzaToppingsImageIndex == -1) {selectedPizzaToppingsImageIndex = 0;} // Set the default size index to the first item
+            if(selectedSauceIndexLeft == -1){selectedSauceIndexLeft = 0;}
+            if(selectedSauceIndexRight == -1){selectedSauceIndexRight = 0;}
+            if(selectedCrustIndex == -1){selectedCrustIndex = 0;}
+
+
+
+
+
+//            // Pass the selected data to the cart activity
+//            intent.putExtra("SELECTED_SIZE", selectedSizeIndex);
+//            intent.putExtra("SELECTED_CRUST", selectedCrustIndex);
+//            intent.putExtra("SELECTED_PIZZA_TOPPINGS_IMAGE", selectedPizzaToppingsImageIndex);
+//            intent.putExtra("SELECTED_SAUCE_LEFT", selectedSauceIndexLeft);
+//            intent.putExtra("SELECTED_SAUCE_RIGHT", selectedSauceIndexRight);
+//            intent.putExtra("SELECTED_TOPPINGS_LEFT", selectedToppingsLeft);
+//            intent.putExtra("SELECTED_TOPPINGS_RIGHT", selectedToppingsRight);
+            if (selectedSizeIndex != -1 && selectedCrustIndex != -1 && selectedPizzaToppingsImageIndex != -1 &&
+                    selectedSauceIndexLeft != -1 && selectedSauceIndexRight != -1 &&
+                    selectedToppingsLeft != null && selectedToppingsRight != null) {
+                // Add the item to the database
+                boolean dbSuccess = addItemCreateYourOwnPizzaToLocalDB(selectedSizeIndex, selectedCrustIndex, selectedPizzaToppingsImageIndex,
+                        selectedSauceIndexLeft, selectedSauceIndexRight,
+                        selectedToppingsLeft, selectedToppingsRight, 1,R.drawable.pizza4);
+                if(dbSuccess){
+                    Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, cart.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(this, "Data Not Inserted", Toast.LENGTH_SHORT).show();
+                }
             }
-            if(selectedSauceIndexLeft == -1){
-                selectedSauceIndexLeft = 0;
-            }
-            if(selectedSauceIndexRight == -1){
-                selectedSauceIndexRight = 0;
-            }
-
-
-
-            // Pass the selected data to the cart activity
-            intent.putExtra("SELECTED_SIZE", selectedSizeIndex);
-            intent.putExtra("SELECTED_CRUST", selectedCrustIndex);
-            intent.putExtra("SELECTED_PIZZA_TOPPINGS_IMAGE", selectedPizzaToppingsImageIndex);
-            intent.putExtra("SELECTED_SAUCE_LEFT", selectedSauceIndexLeft);
-            intent.putExtra("SELECTED_SAUCE_RIGHT", selectedSauceIndexRight);
-            intent.putExtra("SELECTED_TOPPINGS_LEFT", selectedToppingsLeft);
-            intent.putExtra("SELECTED_TOPPINGS_RIGHT", selectedToppingsRight);
-
-            startActivity(intent);
+            //startActivity(intent);
         });
         if (selectedPizzaToppingsImageIndex == -1) {
             selectedPizzaToppingsImageIndex = 0; // Set the default size index to the first item
@@ -160,6 +195,123 @@ public class create_your_own_step_2 extends AppCompatActivity {
         priceTextView1.setOnClickListener(view -> toggleSauceSelection(0,isLeftHalfSelected));
         priceTextView2.setOnClickListener(view -> toggleSauceSelection(1,isLeftHalfSelected));
         priceTextView3.setOnClickListener(view -> toggleSauceSelection(2,isLeftHalfSelected));
+    }
+    private boolean addItemCreateYourOwnPizzaToLocalDB(int Size, int Crust , int ToppingsImage,
+                                                       int SauceLeft, int SauceRight,
+                                                       boolean[] ToppingsLeft, boolean[] ToppingsRight,int quantity,int image){
+
+        String[] toppingsNames = {
+                "Pineapple", "Jalapenos", "Sweet Corn", "Pepperoni", "Red Onions",
+                "Anchovies", "Ground Beef", "Chicken Tikka", "Mushroom", "Tuna"
+        };
+
+        float totalPizzaPrice = 0;
+
+
+        // Check if data exists from intents and add to the list accordingly
+        ArrayList<String> returnToppingsLeftList = new ArrayList<>();
+        ArrayList<String> returnToppingsRightList = new ArrayList<>();
+
+        float returnSize;
+        switch (Size) {
+            case 0: returnSize = 7.0f;  totalPizzaPrice += 5.99;  break; // 7 inch pizza
+            case 1: returnSize = 9.0f;  totalPizzaPrice += 7.99;  break; // 9 inch pizza
+            case 2: returnSize = 12.0f; totalPizzaPrice += 9.99;  break; // 12 inch pizza
+            case 3: returnSize = 13.5f; totalPizzaPrice += 15.99; break; // 13.5 inch pizza
+            default: returnSize = -1; break; // invalid size
+        }
+
+
+
+        // Process Crust
+        String returnCrust;
+        switch (Crust) {
+            case 0: returnCrust = "Classic Crust"; break;
+            case 1:
+                returnCrust = "Italian Crust"; //add extra 1.00 if italian crust
+                totalPizzaPrice += 1.00;
+                break;
+            default: returnCrust = "Unknown Crust"; break;
+        }
+
+        // Process ToppingsImage
+        String returnToppingsImage;
+        switch (ToppingsImage) {
+            case 0: returnToppingsImage = "Vegetable Toppings"; break;
+            case 1: returnToppingsImage = "Cheese toppings"; break;
+            default: returnToppingsImage = "Unknown toppings"; break;
+        }
+
+        // Process SauceLeft
+        String returnSauceLeft;
+        switch (SauceLeft) {
+            case 0: returnSauceLeft = "BBQ"; break;
+            case 1: returnSauceLeft = "Tomato"; break;
+            case 2: returnSauceLeft = "Garlic Herb"; break;
+            default: returnSauceLeft = "Unknown Sauce"; break;
+        }
+
+        // Process SauceRight
+        String returnSauceRight;
+        switch (SauceRight) {
+            case 0: returnSauceRight = "BBQ"; break;
+            case 1: returnSauceRight = "Tomato"; break;
+            case 2: returnSauceRight = "Garlic Herb"; break;
+            default: returnSauceRight = "Unknown Sauce"; break;
+        }
+
+        // Process ToppingsLeft
+        if (ToppingsLeft != null && ToppingsLeft.length > 0) {
+            for (int i = 0; i < ToppingsLeft.length; i++) {
+                if (ToppingsLeft[i]) {
+                    // Ensure index i corresponds to a valid topping name
+                    if (i < toppingsNames.length) {
+                        returnToppingsLeftList.add(toppingsNames[i]);
+                    }
+                }
+            }
+        }
+
+        // Process ToppingsRight
+        if (ToppingsRight != null && ToppingsRight.length > 0) {
+            for (int i = 0; i < ToppingsRight.length; i++) {
+                if (ToppingsRight[i]) {
+                    // Ensure index i corresponds to a valid topping name
+                    if (i < toppingsNames.length) {
+                        returnToppingsRightList.add(toppingsNames[i]);
+                    }
+                }
+            }
+        }
+
+
+        totalPizzaPrice *= quantity;
+
+        CartModel newCartItem = new CartModel(
+                String.valueOf(quantity),
+                "Create Your Own",
+                String.format(Locale.getDefault(), "%.2f", totalPizzaPrice),
+                image,
+                0,
+                String.valueOf(returnSize),
+                returnCrust,
+                returnToppingsImage,
+                returnSauceLeft,
+                returnSauceRight,
+                returnToppingsLeftList,
+                returnToppingsRightList);
+        // Add the item to the database
+        CartDBHelper dbHelper = new CartDBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long insertSuccess = dbHelper.insertCartItem(newCartItem);
+
+        db.close(); // Close the database connection
+        if(insertSuccess == -1)
+            return false;
+        else
+            return true;
+
+
     }
 
     private void toggleToppingsSelectionLeft(RelativeLayout selectedLayout, TextView selectedTextView) {
@@ -227,6 +379,7 @@ public class create_your_own_step_2 extends AppCompatActivity {
             txt_left_half_pizza.setTextColor(Color.parseColor("#FE724C"));
 
             toggleSauceSelectionForHalf(selectedSauceIndexLeft, true); // Update UI for left half sauce
+            toggleToppingsSelectionForHalf(selectedToppingsLeft);
 
         } else {
             leftHalfPizza.setAlpha(0.5f);
@@ -235,7 +388,57 @@ public class create_your_own_step_2 extends AppCompatActivity {
             txt_right_half_pizza.setTextColor(Color.parseColor("#FE724C"));
 
             toggleSauceSelectionForHalf(selectedSauceIndexRight, false); // Update UI for right half sauce
+            toggleToppingsSelectionForHalf(selectedToppingsRight);
         }
+    }
+    private void toggleToppingsSelectionForHalf(boolean[] selectedToppings) {
+        // Toppings for left half
+        pineappleRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[0] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        pineappleText.setTextColor(selectedToppings[0] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        pineappleText.setAlpha(selectedToppings[0] ? 1.0f : 0.5f);
+        pineappleRl.setTag(selectedToppings[0]);
+
+        jalapenosRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[1] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        jalapenosText.setTextColor(selectedToppings[1] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        jalapenosText.setAlpha(selectedToppings[1] ? 1.0f : 0.5f);
+        jalapenosRl.setTag(selectedToppings[1]);
+
+        sweetCornRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[2] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        sweetCornText.setTextColor(selectedToppings[2] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        sweetCornText.setAlpha(selectedToppings[2] ? 1.0f : 0.5f);
+        sweetCornRl.setTag(selectedToppings[2]);
+
+        pepperoniRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[3] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        pepperoniText.setTextColor(selectedToppings[3] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        pepperoniText.setAlpha(selectedToppings[3] ? 1.0f : 0.5f);
+
+        redOnionsRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[4] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        redOnionsText.setTextColor(selectedToppings[4] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        redOnionsText.setAlpha(selectedToppings[4] ? 1.0f : 0.5f);
+
+        anchoviesRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[5] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        anchoviesText.setTextColor(selectedToppings[5] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        anchoviesText.setAlpha(selectedToppings[5] ? 1.0f : 0.5f);
+
+        groundBeefRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[6] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        groundBeefText.setTextColor(selectedToppings[6] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        groundBeefText.setAlpha(selectedToppings[6] ? 1.0f : 0.5f);
+
+        chickenTikkaRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[7] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        chickenTikkaText.setTextColor(selectedToppings[7] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        chickenTikkaText.setAlpha(selectedToppings[7] ? 1.0f : 0.5f);
+
+        mushroomRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[8] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        mushroomText.setTextColor(selectedToppings[8] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        mushroomText.setAlpha(selectedToppings[8] ? 1.0f : 0.5f);
+
+        tunaRl.setBackground(ContextCompat.getDrawable(this, selectedToppings[9] ? R.drawable.create_your_own_rectangle_selected : R.drawable.create_your_own_rectangle_unselected));
+        tunaText.setTextColor(selectedToppings[9] ? Color.parseColor("#FE724C") : Color.parseColor("#24262F"));
+        tunaText.setAlpha(selectedToppings[9] ? 1.0f : 0.5f);
+
+
+        // Continue the pattern for other toppings similarly
+        // Update the UI for all toppings based on the boolean values in the selectedToppings array
     }
 
     // Inside toggleToppingsSelectionSecond(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected) method
@@ -264,49 +467,10 @@ public class create_your_own_step_2 extends AppCompatActivity {
         }
     }
 
-    private void setSauceSelectionForHalf(RelativeLayout selectedLayout, TextView selectedTextView, boolean isLeftHalfSelected, int selectedSauceIndex) {
-        // Reset all sauces to unselected state
-        create_your_own_rectangle_selected_1_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
-        create_your_own_rectangle_selected_2_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
-        create_your_own_rectangle_selected_3_rl.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_unselected));
 
-        // Reset text colors and alpha for all sauce options
-        priceTextView1.setTextColor(Color.parseColor("#24262F"));
-        priceTextView2.setTextColor(Color.parseColor("#24262F"));
-        priceTextView3.setTextColor(Color.parseColor("#24262F"));
-
-        priceTextView1.setAlpha(0.5f);
-        priceTextView2.setAlpha(0.5f);
-        priceTextView3.setAlpha(0.5f);
-
-        // Update the selected sauce UI based on the selected index
-        switch (selectedSauceIndex) {
-            case 0:
-                selectedLayout = create_your_own_rectangle_selected_1_rl;
-                selectedTextView = priceTextView1;
-                break;
-            case 1:
-                selectedLayout = create_your_own_rectangle_selected_2_rl;
-                selectedTextView = priceTextView2;
-                break;
-            case 2:
-                selectedLayout = create_your_own_rectangle_selected_3_rl;
-                selectedTextView = priceTextView3;
-                break;
-        }
-
-        // Set the selected sauce UI
-        selectedLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.create_your_own_rectangle_selected));
-        selectedTextView.setTextColor(Color.parseColor("#FE724C"));
-        selectedTextView.setAlpha(1.0f);
-    }
     // Inside toggleSauceSelection(int sauceNumber, boolean isLeftHalfSelected) method
     private void toggleSauceSelection(int sauceNumber, boolean isLeftHalfSelected) {
-        if (isLeftHalfSelected) {
-            toggleSauceSelectionForHalf(sauceNumber, true);
-        } else {
-            toggleSauceSelectionForHalf(sauceNumber, false);
-        }
+        toggleSauceSelectionForHalf(sauceNumber, isLeftHalfSelected);
     }
     private void updateSauceIndex(int sauceIndex, boolean isLeftHalfSelected) {
         if (isLeftHalfSelected) {

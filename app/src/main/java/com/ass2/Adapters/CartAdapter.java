@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ass2.Helper.CartDBHelper;
 import com.ass2.Models.CartModel;
 import com.ass2.Models.MainModel;
 import com.ass2.project_smd.R;
@@ -26,8 +27,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_LAYOUT_1 = 0;
     private static final int VIEW_TYPE_LAYOUT_2 = 1;
-    private ArrayList<CartModel> list;
-    private Context context;
+    private static ArrayList<CartModel> list;
+    private static Context context;
 
     public CartAdapter(ArrayList<CartModel> list, Context context) {
         this.list = list;
@@ -75,16 +76,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final CartModel model = list.get(position);
 
-        if (holder instanceof CartAdapter.Layout1ViewHolder) {
-            ((CartAdapter.Layout1ViewHolder) holder).bindLayout1Data(model);
-            if (model.getViewType() == VIEW_TYPE_LAYOUT_1) {
-
-            }
-        } else if (holder instanceof CartAdapter.Layout2ViewHolder) {
-            ((CartAdapter.Layout2ViewHolder) holder).bindLayout2Data(model);
-            if (model.getViewType() == VIEW_TYPE_LAYOUT_2) {
-
-            }
+        if (holder instanceof Layout1ViewHolder) {
+            Layout1ViewHolder layout1ViewHolder = (Layout1ViewHolder) holder;
+            layout1ViewHolder.bindLayout1Data(model);
+            layout1ViewHolder.adapter = this; // Ensure the adapter reference is set
+        } else if (holder instanceof Layout2ViewHolder) {
+            Layout2ViewHolder layout2ViewHolder = (Layout2ViewHolder) holder;
+            layout2ViewHolder.bindLayout2Data(model);
+            layout2ViewHolder.adapter = this; // Ensure the adapter reference is set
         }
     }
 
@@ -127,6 +126,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (count > 1) {
                         count--;
                         itemCount.setText(String.valueOf(count));
+                        updateItemCountInDB(item, count);
                     } else {
                         int adapterPosition = getAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -140,6 +140,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             crossButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     int adapterPosition = getAdapterPosition();
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         // Access list and notifyItemRemoved through the adapter instance
@@ -154,13 +155,26 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int count = Integer.parseInt(itemCount.getText().toString());
                     count++;
                     itemCount.setText(String.valueOf(count));
+                    updateItemCountInDB(item, count);
+
                 }
             });
         }
     }
     public void removeItem(int position) {
+        CartModel removedItem = list.get(position);
+        CartDBHelper dbHelper = new CartDBHelper(context);
+        dbHelper.deleteCartItem(removedItem); // Method to delete the item from the database
         list.remove(position);
         notifyItemRemoved(position);
+    }
+
+
+    private static void updateItemCountInDB(CartModel item, int newCount) {
+        // Update item count in the database
+        CartDBHelper dbHelper = new CartDBHelper(context);
+        item.setItemCount(String.valueOf(newCount));
+        dbHelper.updateCartItem(item); // Method to update item count in the database
     }
     // ViewHolder for layout 2
     private static class Layout2ViewHolder extends RecyclerView.ViewHolder {
