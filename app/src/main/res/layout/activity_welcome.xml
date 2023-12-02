@@ -181,8 +181,8 @@
     android:layout_below="@+id/SignInButtonsRL"
     android:layout_marginTop="20dp"
     >
-    <View
-        android:id="@+id/rectangle_transparent"
+    <ImageButton
+        android:id="@+id/btn_startWithEmailorPhone"
         android:layout_width="315dp"
         android:layout_height="54dp"
         android:layout_alignParentTop="true"

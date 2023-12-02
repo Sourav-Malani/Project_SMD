@@ -7,22 +7,25 @@ import java.util.Locale;
 
 public class CartModel {
 
-    String itemCount, itemName, itemPrice, itemDescription, itemSize;
+    String itemName, itemPrice, itemDescription;
 
-    int itemImage,itemID;
+    int itemImage,itemID,itemCount;
+
+    float UNITPRICE;
 
     int viewType;
     String date;
     String itemCrust,itemToppings;
+    float itemSize;
     private String selectedSauceLeft;
     private String selectedSauceRight;
     private ArrayList<String> selectedToppingsLeft;
     private ArrayList<String> selectedToppingsRight;
 
-    public CartModel(String itemCount, String itemName, String itemPrice,int itemImage,
-                     int viewType,String itemSize,String itemCrust,String itemToppings, String selectedSauceLeft, String selectedSauceRight,
+    public CartModel(int itemCount, String itemName, String itemPrice,int itemImage,
+                     int viewType,float itemSize,String itemCrust,String itemToppings, String selectedSauceLeft, String selectedSauceRight,
                      ArrayList<String> selectedToppingsLeft, ArrayList<String> selectedToppingsRight) {
-        this.itemCount = "1"; // one item is added by default
+        this.itemCount = 1; // one item is added by default
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.itemImage = itemImage;
@@ -39,9 +42,10 @@ public class CartModel {
 
     public CartModel() {
         // Default constructor
+
     }
 
-    public CartModel(String itemCount, String itemName, String itemPrice, String itemDescription, int itemImage,
+    public CartModel(int itemCount, String itemName, String itemPrice, String itemDescription, int itemImage,
                      int viewType) {
         this.itemCount = itemCount;
         this.itemName = itemName;
@@ -94,6 +98,7 @@ public class CartModel {
         return itemPrice;
     }
 
+
     public void setItemPrice(String itemPrice) {
         this.itemPrice = itemPrice;
     }
@@ -138,19 +143,79 @@ public class CartModel {
         this.selectedToppingsRight = selectedToppingsRight;
     }
 
-    public String getDate() {
-        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    public String getDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
+
 
     public void setDate(String date) {
         this.date = date;
     }
 
-    public String getItemCount() {
+    public int getItemCount() {
         return itemCount;
     }
 
-    public void setItemCount(String itemCount) {
+    public float getItemSize() {
+        return itemSize;
+    }
+
+    public void setItemSize(float itemSize) {
+        this.itemSize = itemSize;
+    }
+
+    public String getItemToppings() {
+        return itemToppings;
+    }
+
+    public void setItemToppings(String itemToppings) {
+        this.itemToppings = itemToppings;
+    }
+
+    public void setItemID(int itemID) {
+        this.itemID = itemID;
+    }
+
+    public void setItemCrust(String itemCrust) {
+        this.itemCrust = itemCrust;
+    }
+
+    public String getItemCrust() {
+        return itemCrust;
+    }
+
+
+    public void setItemCount(int itemCount) {
         this.itemCount = itemCount;
     }
+    public float getUnitPrice(float s, String c) {
+        return calculateUnitPrice(s,c);
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.UNITPRICE = unitPrice;
+    }
+    public float calculateUnitPrice(float size,String crust) {
+        float totalPizzaPrice = 0.0f;
+        if(size == 7.0f) {
+            totalPizzaPrice += 5.99;
+        } else if(size == 9.0f) {
+            totalPizzaPrice += 7.99;
+        } else if(size == 12.0f) {
+            totalPizzaPrice += 9.99;
+        } else if(size == 13.5f) {
+            totalPizzaPrice += 15.99;
+        }
+
+        if (crust.equals("Classic Crust")) {
+            totalPizzaPrice += 0.00; // no change
+        } else if (crust.equals("Italian Crust")) {
+            totalPizzaPrice += 1.00; // add 1$
+        }
+        return totalPizzaPrice;
+
+    }
+
+
 }

@@ -25,7 +25,7 @@
         >
 
         <TextView
-            android:id="@+id/itemCount"
+            android:id="@+id/itemCountYO"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -64,10 +64,10 @@
             android:text="Create Your Own"
             android:textColor="@color/black"
             android:textSize="18sp" />
-        <View
+        <ImageButton
             android:id="@+id/cross"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"

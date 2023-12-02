@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.ass2.Models.CartModel;
 
@@ -50,8 +51,8 @@ public class CartDBHelper extends SQLiteOpenHelper {
                 + COLUMN_ITEM_TYPE + " INTEGER,"
                 + COLUMN_ITEM_NAME + " TEXT,"
                 + COLUM_ITEM_QUANTITY + " INTEGER,"
-                + COLUM_PIZZA_SIZE + " INTEGER,"
-                + COLUM_PIZZA_CRUST + " INTEGER,"
+                + COLUM_PIZZA_SIZE + " FLOAT,"
+                + COLUM_PIZZA_CRUST + " TEXT,"
                 + COLUM_PIZZA_TOPPINGS + " TEXT,"
                 + COLUMN_ITEM_IMAGE_URL + " INTEGER,"
                 + COLUMN_ITEM_PRICE + " TEXT,"
@@ -84,9 +85,13 @@ public class CartDBHelper extends SQLiteOpenHelper {
             int columnIndexId = cursor.getColumnIndex(COLUMN_ID);
             int columnIndexItemType = cursor.getColumnIndex(COLUMN_ITEM_TYPE);
             int columnIndexItemName = cursor.getColumnIndex(COLUMN_ITEM_NAME);
+            int columnIndexItemQuantity = cursor.getColumnIndex(COLUM_ITEM_QUANTITY);
             int columnIndexItemImageUrl = cursor.getColumnIndex(COLUMN_ITEM_IMAGE_URL);
             int columnIndexItemPrice = cursor.getColumnIndex(COLUMN_ITEM_PRICE);
             int columnIndexItemDescription = cursor.getColumnIndex(COLUMN_ITEM_DESCRIPTION);
+            int columnIndexItemSize = cursor.getColumnIndex(COLUM_PIZZA_SIZE);
+            int columnIndexItemCrust = cursor.getColumnIndex(COLUM_PIZZA_CRUST);
+            int columnIndexItemToppings = cursor.getColumnIndex(COLUM_PIZZA_TOPPINGS);
             int columnIndexLeftSauce = cursor.getColumnIndex(COLUMN_LEFT_SAUCE);
             int columnIndexRightSauce = cursor.getColumnIndex(COLUMN_RIGHT_SAUCE);
             int columnIndexToppingsLeft = cursor.getColumnIndex(COLUMN_TOPPINGS_LEFT);
@@ -105,6 +110,9 @@ public class CartDBHelper extends SQLiteOpenHelper {
                 if (columnIndexItemName != -1) {
                     cartModel.setItemName(cursor.getString(columnIndexItemName));
                 }
+                if (columnIndexItemQuantity != -1) {
+                    cartModel.setItemCount(cursor.getInt(columnIndexItemQuantity));
+                }
                 if (columnIndexItemImageUrl != -1) {
                     cartModel.setItemImage(cursor.getInt(columnIndexItemImageUrl));
                 }
@@ -116,6 +124,9 @@ public class CartDBHelper extends SQLiteOpenHelper {
                 }
                 if (columnIndexDate != -1) {
                     cartModel.setDate(cursor.getString(columnIndexDate));
+                }
+                if (columnIndexItemSize != -1) {
+                    cartModel.setItemSize(cursor.getFloat(columnIndexItemSize));
                 }
 
                 int viewType = cartModel.getViewType();
@@ -133,6 +144,13 @@ public class CartDBHelper extends SQLiteOpenHelper {
                         if (columnIndexToppingsRight != -1) {
                             cartModel.setSelectedToppingsRight(convertStringToList(cursor.getString(columnIndexToppingsRight)));
                         }
+                        if (columnIndexItemCrust != -1) {
+                            cartModel.setItemCrust(cursor.getString(columnIndexItemCrust));
+                        }
+                        if (columnIndexItemToppings != -1) {
+                            cartModel.setItemToppings(cursor.getString(columnIndexItemToppings));
+                        }
+
                         // Add other specific fields for Create Your Own Pizza
                         break;
                     case 1: // Simple Pizza
@@ -155,6 +173,34 @@ public class CartDBHelper extends SQLiteOpenHelper {
         return cartItems;
     }
 
+    public double calculateSubtotal() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        double subtotal = 0.0;
+
+        Cursor cursor = db.query(
+                TABLE_CART,
+                new String[]{COLUMN_ITEM_PRICE, COLUM_ITEM_QUANTITY},
+                null, null, null, null, null
+        );
+
+        if (cursor != null) {
+            int columnIndexItemPrice = cursor.getColumnIndex(COLUMN_ITEM_PRICE);
+            int columnIndexItemQuantity = cursor.getColumnIndex(COLUM_ITEM_QUANTITY);
+
+            while (cursor.moveToNext()) {
+                double unitPrice = cursor.getDouble(columnIndexItemPrice);
+                int quantity = cursor.getInt(columnIndexItemQuantity);
+                subtotal += unitPrice * quantity;
+
+                Log.d("SubtotalDebug", "Unit Price: " + unitPrice + ", Quantity: " + quantity + ", Subtotal: " + subtotal);
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return subtotal;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Handle database upgrades
@@ -169,40 +215,79 @@ public class CartDBHelper extends SQLiteOpenHelper {
         db.close();
     }
     // Method to update cart item details in the database
-    public void updateCartItem(CartModel cartItem) {
+    public boolean updateCartItem(CartModel cartItem) {
+        Log.d("CartAdapterDebug", "Updating item count in DB. Item: " + cartItem.getItemName());
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         // Update the fields based on your CartModel structure
         values.put(COLUMN_ITEM_NAME, cartItem.getItemName());
+        values.put(COLUMN_ITEM_TYPE, cartItem.getViewType());
+        values.put(COLUM_ITEM_QUANTITY, cartItem.getItemCount());
         values.put(COLUMN_ITEM_IMAGE_URL, cartItem.getItemImage());
-        values.put(COLUMN_ITEM_PRICE, cartItem.getItemPrice());
+        // Store the unit price, not the total price
+        double unitPrice = Double.parseDouble(cartItem.getItemPrice()) / cartItem.getItemCount();
+        values.put(COLUMN_ITEM_PRICE, String.valueOf(unitPrice));
         values.put(COLUMN_ITEM_DESCRIPTION, cartItem.getItemDescription());
+        values.put(COLUMN_DATE, cartItem.getDateTime()); // Assuming getDate() returns the date
+
+        // Handle attributes based on item type
+        switch (cartItem.getViewType()) {
+            case 0: // Create Your Own Pizza
+                values.put(COLUM_PIZZA_SIZE, cartItem.getItemSize());
+                values.put(COLUM_PIZZA_CRUST, cartItem.getItemCrust());
+                values.put(COLUM_PIZZA_TOPPINGS, cartItem.getItemToppings());
+                values.put(COLUMN_LEFT_SAUCE, cartItem.getSelectedSauceLeft());
+                values.put(COLUMN_RIGHT_SAUCE, cartItem.getSelectedSauceRight());
+                values.put(COLUMN_TOPPINGS_LEFT, convertListToString(cartItem.getSelectedToppingsLeft()));
+                values.put(COLUMN_TOPPINGS_RIGHT, convertListToString(cartItem.getSelectedToppingsRight()));
+                // Add other specific fields for Create Your Own Pizza
+                break;
+            case 1: // Simple Pizza
+                // Add specific fields for Simple Pizza
+                break;
+            case 2: // Other Items
+                // Add specific fields for Other Items
+                break;
+            default:
+                // Handle default case or error
+                break;
+        }
+
         // ... add other fields as needed
 
         // Update the database for a specific item ID
-        db.update(TABLE_CART, values, COLUMN_ID + " = ?",
+        int rowsAffected = db.update(TABLE_CART, values, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(cartItem.getId())});
+        Log.d("CartAdapterDebug", "Updating item count in DB. Item: " + cartItem.getItemName());
+
         db.close();
+        return rowsAffected > 0;
     }
-    public long insertCartItem(CartModel cartModel) {
+
+    public long insertCartItem(CartModel cartItem) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_ITEM_TYPE, cartModel.getViewType()); // Add item type to distinguish between different items
-        values.put(COLUMN_ITEM_NAME, cartModel.getItemName());
-        values.put(COLUMN_ITEM_IMAGE_URL, cartModel.getItemImage());
-        values.put(COLUMN_ITEM_PRICE, cartModel.getItemPrice());
-        values.put(COLUMN_ITEM_DESCRIPTION, cartModel.getItemDescription());
-        values.put(COLUMN_DATE, cartModel.getDate()); // Assuming getDate() returns the date
+        values.put(COLUMN_ITEM_NAME, cartItem.getItemName());
+        values.put(COLUMN_ITEM_TYPE, cartItem.getViewType());
+        values.put(COLUM_ITEM_QUANTITY, cartItem.getItemCount());
+        values.put(COLUMN_ITEM_IMAGE_URL, cartItem.getItemImage());
+        values.put(COLUMN_ITEM_PRICE, cartItem.getItemPrice());
+        values.put(COLUMN_ITEM_DESCRIPTION, cartItem.getItemDescription());
+        values.put(COLUMN_DATE, cartItem.getDateTime()); // Assuming getDate() returns the date
 
         // Handle attributes based on item type
-        switch (cartModel.getViewType()) {
+        switch (cartItem.getViewType()) {
             case 0: // Create Your Own Pizza
-                values.put(COLUMN_LEFT_SAUCE, cartModel.getSelectedSauceLeft());
-                values.put(COLUMN_RIGHT_SAUCE, cartModel.getSelectedSauceRight());
-                values.put(COLUMN_TOPPINGS_LEFT, convertListToString(cartModel.getSelectedToppingsLeft()));
-                values.put(COLUMN_TOPPINGS_RIGHT, convertListToString(cartModel.getSelectedToppingsRight()));
+                values.put(COLUM_PIZZA_SIZE, cartItem.getItemSize());
+                values.put(COLUM_PIZZA_CRUST, cartItem.getItemCrust());
+                values.put(COLUM_PIZZA_TOPPINGS, cartItem.getItemToppings());
+                values.put(COLUMN_LEFT_SAUCE, cartItem.getSelectedSauceLeft());
+                values.put(COLUMN_RIGHT_SAUCE, cartItem.getSelectedSauceRight());
+                values.put(COLUMN_TOPPINGS_LEFT, convertListToString(cartItem.getSelectedToppingsLeft()));
+                values.put(COLUMN_TOPPINGS_RIGHT, convertListToString(cartItem.getSelectedToppingsRight()));
                 // Add other specific fields for Create Your Own Pizza
                 break;
             case 1: // Simple Pizza

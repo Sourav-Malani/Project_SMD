@@ -2,6 +2,7 @@ package com.ass2.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.ass2.project_smd.cart;
 import com.ass2.project_smd.create_your_own_pizza;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -30,21 +32,32 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static ArrayList<CartModel> list;
     private static Context context;
 
+    private TextView subtotalTextView;
+
+
+    public CartAdapter(ArrayList<CartModel> list, Context context, TextView subtotalTextView) {
+        this.list = list;
+        this.context = context;
+        this.subtotalTextView = subtotalTextView;
+    }
+
     public CartAdapter(ArrayList<CartModel> list, Context context) {
         this.list = list;
         this.context = context;
     }
-    @Override
-    public int getItemViewType(int position) {
-        return (position == 0) ? VIEW_TYPE_LAYOUT_1 : VIEW_TYPE_LAYOUT_2;
+    public void updateSubtotal() {
+        CartDBHelper dbHelper = new CartDBHelper(context);
+        double subtotalValue = dbHelper.calculateSubtotal();
+        subtotalTextView.setText(String.format(Locale.getDefault(), "%.2f", subtotalValue));
     }
 
-//    @NonNull
-//    @Override
-//    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_layout, parent, false);
-//        return new CartViewHolder(view);
-//    }
+    @Override
+    public int getItemViewType(int position) {
+        final CartModel model = list.get(position);
+        return model.getViewType();
+    }
+
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -61,16 +74,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-//    @Override
-//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-//        if (holder instanceof CartViewHolder) {
-//            CartViewHolder cartViewHolder = (CartViewHolder) holder;
-//            CartModel item = list.get(position);
-//
-//            // Set data to views in your ViewHolder here
-//            cartViewHolder.bind(item);
-//        }
-//    }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -116,7 +119,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemName.setText(item.getItemName());
             itemPrice.setText(item.getItemPrice());
             itemDescription.setText(item.getItemDescription());
-            itemCount.setText(item.getItemCount());
+            itemCount.setText(String.valueOf(item.getItemCount()));
+
 
 
             minusButton.setOnClickListener(new View.OnClickListener() {
@@ -125,15 +129,21 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     int count = Integer.parseInt(itemCount.getText().toString());
                     if (count > 1) {
                         count--;
+                        double newPrice = calculateNewPrice(item, count);
+                        itemPrice.setText(String.format("%.2f", newPrice));
                         itemCount.setText(String.valueOf(count));
-                        updateItemCountInDB(item, count);
-                    } else {
+                        item.setItemPrice(String.valueOf(newPrice));
+                        item.setItemCount(count);
+                        updateItemInDB(item);
+                    }
+                    else {
                         int adapterPosition = getAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             // Access list and notifyItemRemoved through the adapter instance
                             adapter.removeItem(adapterPosition);
                         }
                     }
+                    adapter.updateSubtotal();
                 }
             });
 
@@ -153,10 +163,16 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int count = Integer.parseInt(itemCount.getText().toString());
-                    count++;
-                    itemCount.setText(String.valueOf(count));
-                    updateItemCountInDB(item, count);
-
+                    if(count<4) { //Restrict to 3
+                        count++;
+                        double newPrice = calculateNewPrice(item, count);
+                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemCount.setText(String.valueOf(count));
+                        item.setItemPrice(String.valueOf(newPrice));
+                        item.setItemCount(count);
+                        updateItemInDB(item);
+                    }
+                    adapter.updateSubtotal();
                 }
             });
         }
@@ -168,22 +184,34 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         list.remove(position);
         notifyItemRemoved(position);
     }
+    private static double calculateNewPrice(CartModel item, int newCount) {
+        double unitPrice = item.getUnitPrice(item.getItemSize(), item.getItemCrust());
+        return unitPrice * newCount;
+    }
+    private static void updateItemInDB(CartModel item) {
+        CartDBHelper dbHelper = new CartDBHelper(context);
+        boolean updateSuccess = dbHelper.updateCartItem(item);
+        Log.d("CartAdapterDebug", "Update success: " + updateSuccess);
+    }
 
 
     private static void updateItemCountInDB(CartModel item, int newCount) {
         // Update item count in the database
         CartDBHelper dbHelper = new CartDBHelper(context);
-        item.setItemCount(String.valueOf(newCount));
-        dbHelper.updateCartItem(item); // Method to update item count in the database
+        item.setItemCount(newCount);
+        boolean updateSuccess = dbHelper.updateCartItem(item);
+        Log.d("CartAdapterDebug", "Update success: " + updateSuccess);
     }
     // ViewHolder for layout 2
     private static class Layout2ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
-        TextView itemName,itemPrice,itemDescription,itemCount;
+        TextView itemName,itemPrice,itemDescription,itemCountT;
         TextView sauceLeft, sauceRight;
         TextView toppingsLeft, toppingsRight;
-        ImageButton minusButton,plusButton;
+        ImageButton minusButton,plusButton,crossButton;
         private CartAdapter adapter;
+
+
 
         Layout2ViewHolder(View itemView, CartAdapter adapter) {
             super(itemView);
@@ -191,8 +219,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemImage = itemView.findViewById(R.id.itemImage);
             itemName = itemView.findViewById(R.id.itemName);
             itemPrice = itemView.findViewById(R.id.itemPrice);
+
             //itemDescription = itemView.findViewById(R.id.itemDescription);
-            itemCount = itemView.findViewById(R.id.itemCount);
+            itemCountT = itemView.findViewById(R.id.itemCountYO);
             sauceLeft = itemView.findViewById(R.id.itemSauce_left);
             sauceRight = itemView.findViewById(R.id.itemSauce_right);
             toppingsLeft = itemView.findViewById(R.id.itemToppings_left);
@@ -202,6 +231,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             minusButton = itemView.findViewById(R.id.btn_minus_item);
             plusButton = itemView.findViewById(R.id.btn_plus_item);
+            crossButton = itemView.findViewById(R.id.cross);
         }
 
         void bindLayout2Data(CartModel item) {
@@ -212,9 +242,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemName.setText(item.getItemName());
             itemPrice.setText(item.getItemPrice());
             //itemDescription.setText(item.getItemDescription());
-            itemCount.setText(item.getItemCount());
+            itemCountT.setText(String.valueOf(item.getItemCount()));
             sauceLeft.setText(item.getSelectedSauceLeft());
             sauceRight.setText(item.getSelectedSauceRight());
+
             //toppingsLeft.setText(item.getSelectedToppingsLeft().toString());
             //toppingsRight.setText(item.getSelectedToppingsRight().toString());
             // Bind toppings data
@@ -249,28 +280,60 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             minusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int count = Integer.parseInt(itemCount.getText().toString());
+                    int count = Integer.parseInt(itemCountT.getText().toString());
                     if (count > 1) {
                         count--;
-                        itemCount.setText(String.valueOf(count));
+                        double newPrice = calculateNewPrice(item, count);
+                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemCountT.setText(String.valueOf(count));
+                        item.setItemPrice(String.valueOf(newPrice));
+                        item.setItemCount(count);
+                        updateItemInDB(item);
+
                     } else {
                         int adapterPosition = getAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             // Access list and notifyItemRemoved through the adapter instance
                             adapter.removeItem(adapterPosition);
+                            //remove item from database
+
+
                         }
                     }
+                    adapter.updateSubtotal();
                 }
             });
 
             plusButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int count = Integer.parseInt(itemCount.getText().toString());
-                    count++;
-                    itemCount.setText(String.valueOf(count));
+                    int count = Integer.parseInt(itemCountT.getText().toString());
+                    if(count<4){
+                        count++;
+                        double newPrice = calculateNewPrice(item, count);
+                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemCountT.setText(String.valueOf(count));
+                        item.setItemPrice(String.valueOf(newPrice));
+                        item.setItemCount(count);
+                        updateItemInDB(item);
+                    }
+                    adapter.updateSubtotal();
+                }
+
+            });
+
+            crossButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    int adapterPosition = getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        // Access list and notifyItemRemoved through the adapter instance
+                        adapter.removeItem(adapterPosition);
+                    }
                 }
             });
+
         }
     }
 
@@ -279,66 +342,4 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return list.size();
     }
 
-    // ViewHolder for your CartItem
-    public static class CartViewHolder extends RecyclerView.ViewHolder {
-
-        // Declare your views here (e.g., TextViews, ImageViews)
-        // Example:
-        ImageView itemImage;
-        TextView itemName,itemPrice,itemDescription,itemCount;
-        ImageButton minusButton,plusButton;
-
-        public CartViewHolder(@NonNull View itemView) {
-            super(itemView);
-            itemImage = itemView.findViewById(R.id.itemImage);
-            itemName = itemView.findViewById(R.id.itemName);
-            itemPrice = itemView.findViewById(R.id.itemPrice);
-            itemDescription = itemView.findViewById(R.id.itemDescription);
-            itemCount = itemView.findViewById(R.id.itemCount);
-            minusButton = itemView.findViewById(R.id.btn_minus_item);
-            plusButton = itemView.findViewById(R.id.btn_plus_item);
-
-
-
-
-        }
-
-        public void bind(CartModel item) {
-            // itemNameTextView.setText(item.getItemName());
-            // itemPriceTextView.setText(item.getItemPrice());
-            // itemImageView.setImageResource(item.getItemImage());
-
-            itemImage.setImageResource(item.getItemImage());
-
-
-            itemName.setText(item.getItemName());
-            itemPrice.setText(item.getItemPrice());
-            itemDescription.setText(item.getItemDescription());
-            itemCount.setText(item.getItemCount());
-
-            minusButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int count = Integer.parseInt(itemCount.getText().toString());
-                    if(count>1){
-                        count--;
-                        itemCount.setText(String.valueOf(count));
-                    }
-                }
-            });
-
-            plusButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int count = Integer.parseInt(itemCount.getText().toString());
-                    count++;
-                    itemCount.setText(String.valueOf(count));
-                }
-            });
-
-;
-
-
-        }
-    }
 }

@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,12 +50,49 @@ public class create_your_own_step_2 extends AppCompatActivity {
     private final boolean[] selectedToppingsRight = new boolean[10];
 
     ArrayList<CartModel> cartList = new ArrayList<>();
-
+    float totalPizzaPrice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_your_own_step2);
+        initializeViews();
+        getIntentData();
+        setupListeners();
 
+
+        double price = calculateCYOPizzaPrice();
+        txt_cartPrice.setText("$"+totalPizzaPrice  );
+
+
+
+        if (selectedPizzaToppingsImageIndex == -1) {
+            selectedPizzaToppingsImageIndex = 0; // Set the default size index to the first item
+        }
+        if(selectedSauceIndexLeft == -1){
+            selectedSauceIndexLeft = 0;
+        }
+        if(selectedSauceIndexRight == -1){
+            selectedSauceIndexRight = 0;
+        }
+
+
+
+
+    }
+
+//    private void passTheIntentDate(){
+//        Intent intent = new Intent(this, cart.class);
+//        intent.putExtra("SELECTED_SIZE", selectedSizeIndex);
+//        intent.putExtra("SELECTED_CRUST", selectedCrustIndex);
+//        intent.putExtra("SELECTED_PIZZA_TOPPINGS_IMAGE", selectedPizzaToppingsImageIndex);
+//        intent.putExtra("SELECTED_SAUCE_LEFT", selectedSauceIndexLeft);
+//        intent.putExtra("SELECTED_SAUCE_RIGHT", selectedSauceIndexRight);
+//        intent.putExtra("SELECTED_TOPPINGS_LEFT", selectedToppingsLeft);
+//        intent.putExtra("SELECTED_TOPPINGS_RIGHT", selectedToppingsRight);
+//        startActivity(intent);
+//    }
+
+    private void getIntentData() {
         // Retrieve the selected data from the intent
         Intent intentTwo = getIntent();
         if (intentTwo != null) {
@@ -64,7 +103,87 @@ public class create_your_own_step_2 extends AppCompatActivity {
             // Use the selected data as needed
             // ...
         }
+    }
 
+    private double calculateCYOPizzaPrice(){
+        double calculatedPrice = 0.0;
+
+        switch (selectedSizeIndex) {
+            case 0: calculatedPrice += 5.99;  break; // 7 inch pizza
+            case 1: calculatedPrice += 7.99;  break; // 9 inch pizza
+            case 2: calculatedPrice += 9.99;  break; // 12 inch pizza
+            case 3: calculatedPrice += 15.99; break; // 13.5 inch pizza
+            default: break; // invalid size
+        }
+
+        switch (selectedCrustIndex) {
+            case 0: break; // Classic Crust
+            case 1: calculatedPrice += 1.00; break; // Italian Crust
+            default: break; // Unknown Crust
+        }
+
+        return calculatedPrice;
+    }
+
+    private void setupListeners() {
+        pineappleRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pineappleRl, pineappleText, isLeftHalfSelected));
+        jalapenosRl.setOnClickListener(view -> toggleToppingsSelectionSecond(jalapenosRl, jalapenosText, isLeftHalfSelected));
+        sweetCornRl.setOnClickListener(view -> toggleToppingsSelectionSecond(sweetCornRl, sweetCornText, isLeftHalfSelected));
+        pepperoniRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pepperoniRl, pepperoniText, isLeftHalfSelected));
+        redOnionsRl.setOnClickListener(view -> toggleToppingsSelectionSecond(redOnionsRl, redOnionsText, isLeftHalfSelected));
+        anchoviesRl.setOnClickListener(view -> toggleToppingsSelectionSecond(anchoviesRl, anchoviesText, isLeftHalfSelected));
+        groundBeefRl.setOnClickListener(view -> toggleToppingsSelectionSecond(groundBeefRl, groundBeefText, isLeftHalfSelected));
+        chickenTikkaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(chickenTikkaRl, chickenTikkaText, isLeftHalfSelected));
+        mushroomRl.setOnClickListener(view -> toggleToppingsSelectionSecond(mushroomRl, mushroomText, isLeftHalfSelected));
+        tunaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(tunaRl, tunaText, isLeftHalfSelected));
+
+        floating_cart_rl.setOnClickListener(view -> {
+
+            if(selectedSauceIndexLeft == -1){selectedSauceIndexLeft = 0; } // "BBQ"
+            if(selectedSauceIndexRight == -1){selectedSauceIndexRight = 0;}// "BBQ"
+
+            if (selectedSizeIndex != -1 && selectedCrustIndex != -1 && selectedPizzaToppingsImageIndex != -1 &&
+                    selectedSauceIndexLeft != -1 && selectedSauceIndexRight != -1 &&
+                    selectedToppingsLeft != null && selectedToppingsRight != null) {
+                // Add the item to the database
+                boolean dbSuccess = addItemCreateYourOwnPizzaToLocalDB(selectedSizeIndex, selectedCrustIndex, selectedPizzaToppingsImageIndex,
+                        selectedSauceIndexLeft, selectedSauceIndexRight,
+                        selectedToppingsLeft, selectedToppingsRight,
+                        1,R.drawable.pizza4);
+                if(dbSuccess){
+                    Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+                    //navigate to the DashBoardFragment
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    fragmentTransaction.replace(R.id.DashboardFragment, new DashboardFragment());
+                    fragmentTransaction.commit();
+
+                    //passTheIntentDate();
+                }
+                else{
+                    Toast.makeText(this, "Data Not Inserted", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        leftHalfPizza.setOnClickListener(view -> toggleToppingsSelection(true));
+        rightHalfPizza.setOnClickListener(view -> toggleToppingsSelection(false));
+
+        back.setOnClickListener(v -> {
+            // Navigate to the previous activity
+            finish();
+        });
+
+
+        priceTextView1.setOnClickListener(view -> toggleSauceSelection(0,isLeftHalfSelected));
+        priceTextView2.setOnClickListener(view -> toggleSauceSelection(1,isLeftHalfSelected));
+        priceTextView3.setOnClickListener(view -> toggleSauceSelection(2,isLeftHalfSelected));
+
+
+
+    }
+    private void initializeViews() {
         back = findViewById(R.id.back);
 
         leftHalfPizza = findViewById(R.id.img_left_half_pizza);
@@ -103,109 +222,22 @@ public class create_your_own_step_2 extends AppCompatActivity {
         mushroomText = findViewById(R.id.mushroom_text);
         tunaText = findViewById(R.id.tuna_text);
 
-
-
-        pineappleRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pineappleRl, pineappleText, isLeftHalfSelected));
-        jalapenosRl.setOnClickListener(view -> toggleToppingsSelectionSecond(jalapenosRl, jalapenosText, isLeftHalfSelected));
-        sweetCornRl.setOnClickListener(view -> toggleToppingsSelectionSecond(sweetCornRl, sweetCornText, isLeftHalfSelected));
-        pepperoniRl.setOnClickListener(view -> toggleToppingsSelectionSecond(pepperoniRl, pepperoniText, isLeftHalfSelected));
-        redOnionsRl.setOnClickListener(view -> toggleToppingsSelectionSecond(redOnionsRl, redOnionsText, isLeftHalfSelected));
-        anchoviesRl.setOnClickListener(view -> toggleToppingsSelectionSecond(anchoviesRl, anchoviesText, isLeftHalfSelected));
-        groundBeefRl.setOnClickListener(view -> toggleToppingsSelectionSecond(groundBeefRl, groundBeefText, isLeftHalfSelected));
-        chickenTikkaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(chickenTikkaRl, chickenTikkaText, isLeftHalfSelected));
-        mushroomRl.setOnClickListener(view -> toggleToppingsSelectionSecond(mushroomRl, mushroomText, isLeftHalfSelected));
-        tunaRl.setOnClickListener(view -> toggleToppingsSelectionSecond(tunaRl, tunaText, isLeftHalfSelected));
-
-        CartDBHelper dbHelper = new CartDBHelper(this);
-        ArrayList<CartModel> cartItems = dbHelper.getAllCartItems();
-
-        double totalPrice = 0.0;
-
-        for (CartModel cartItem : cartItems) {
-            // Assuming the price is stored as a String and needs conversion to double
-            double itemPrice = Double.parseDouble(cartItem.getItemPrice());
-            totalPrice += itemPrice;
-            //Toast.makeText(this, "Total Price: " + totalPrice, Toast.LENGTH_SHORT).show();
-            txt_cartPrice.setText(String.format(Locale.getDefault(), "£%.2f", totalPrice));
-        }
-
         floating_cart_rl = findViewById(R.id.floating_cart_rl);
 
-        floating_cart_rl.setOnClickListener(view -> {
-            // Navigate to the cart activity
-            //Intent intent = new Intent(this, cart.class);
-
-            if (selectedPizzaToppingsImageIndex == -1) {selectedPizzaToppingsImageIndex = 0;} // Set the default size index to the first item
-            if(selectedSauceIndexLeft == -1){selectedSauceIndexLeft = 0;}
-            if(selectedSauceIndexRight == -1){selectedSauceIndexRight = 0;}
-            if(selectedCrustIndex == -1){selectedCrustIndex = 0;}
 
 
-
-
-
-//            // Pass the selected data to the cart activity
-//            intent.putExtra("SELECTED_SIZE", selectedSizeIndex);
-//            intent.putExtra("SELECTED_CRUST", selectedCrustIndex);
-//            intent.putExtra("SELECTED_PIZZA_TOPPINGS_IMAGE", selectedPizzaToppingsImageIndex);
-//            intent.putExtra("SELECTED_SAUCE_LEFT", selectedSauceIndexLeft);
-//            intent.putExtra("SELECTED_SAUCE_RIGHT", selectedSauceIndexRight);
-//            intent.putExtra("SELECTED_TOPPINGS_LEFT", selectedToppingsLeft);
-//            intent.putExtra("SELECTED_TOPPINGS_RIGHT", selectedToppingsRight);
-            if (selectedSizeIndex != -1 && selectedCrustIndex != -1 && selectedPizzaToppingsImageIndex != -1 &&
-                    selectedSauceIndexLeft != -1 && selectedSauceIndexRight != -1 &&
-                    selectedToppingsLeft != null && selectedToppingsRight != null) {
-                // Add the item to the database
-                boolean dbSuccess = addItemCreateYourOwnPizzaToLocalDB(selectedSizeIndex, selectedCrustIndex, selectedPizzaToppingsImageIndex,
-                        selectedSauceIndexLeft, selectedSauceIndexRight,
-                        selectedToppingsLeft, selectedToppingsRight, 1,R.drawable.pizza4);
-                if(dbSuccess){
-                    Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, cart.class);
-                    startActivity(intent);
-                }
-                else{
-                    Toast.makeText(this, "Data Not Inserted", Toast.LENGTH_SHORT).show();
-                }
-            }
-            //startActivity(intent);
-        });
-        if (selectedPizzaToppingsImageIndex == -1) {
-            selectedPizzaToppingsImageIndex = 0; // Set the default size index to the first item
-        }
-        if(selectedSauceIndexLeft == -1){
-            selectedSauceIndexLeft = 0;
-        }
-        if(selectedSauceIndexRight == -1){
-            selectedSauceIndexRight = 0;
-        }
-
-
-
-
-        leftHalfPizza.setOnClickListener(view -> toggleToppingsSelection(true));
-        rightHalfPizza.setOnClickListener(view -> toggleToppingsSelection(false));
-
-        back.setOnClickListener(v -> {
-            // Navigate to the previous activity
-            finish();
-        });
-
-
-        priceTextView1.setOnClickListener(view -> toggleSauceSelection(0,isLeftHalfSelected));
-        priceTextView2.setOnClickListener(view -> toggleSauceSelection(1,isLeftHalfSelected));
-        priceTextView3.setOnClickListener(view -> toggleSauceSelection(2,isLeftHalfSelected));
     }
     private boolean addItemCreateYourOwnPizzaToLocalDB(int Size, int Crust , int ToppingsImage,
                                                        int SauceLeft, int SauceRight,
-                                                       boolean[] ToppingsLeft, boolean[] ToppingsRight,int quantity,int image){
+                                                       boolean[] ToppingsLeft, boolean[] ToppingsRight,
+                                                       int quantity,int image){
 
         String[] toppingsNames = {
                 "Pineapple", "Jalapenos", "Sweet Corn", "Pepperoni", "Red Onions",
                 "Anchovies", "Ground Beef", "Chicken Tikka", "Mushroom", "Tuna"
         };
 
-        float totalPizzaPrice = 0;
+        totalPizzaPrice = 0;
 
 
         // Check if data exists from intents and add to the list accordingly
@@ -288,18 +320,19 @@ public class create_your_own_step_2 extends AppCompatActivity {
         totalPizzaPrice *= quantity;
 
         CartModel newCartItem = new CartModel(
-                String.valueOf(quantity),
+                quantity,
                 "Create Your Own",
                 String.format(Locale.getDefault(), "%.2f", totalPizzaPrice),
                 image,
                 0,
-                String.valueOf(returnSize),
+                returnSize,
                 returnCrust,
                 returnToppingsImage,
                 returnSauceLeft,
                 returnSauceRight,
                 returnToppingsLeftList,
                 returnToppingsRightList);
+
         // Add the item to the database
         CartDBHelper dbHelper = new CartDBHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -313,6 +346,8 @@ public class create_your_own_step_2 extends AppCompatActivity {
 
 
     }
+
+
 
     private void toggleToppingsSelectionLeft(RelativeLayout selectedLayout, TextView selectedTextView) {
         boolean isSelected = selectedLayout.getTag() != null && (boolean) selectedLayout.getTag();

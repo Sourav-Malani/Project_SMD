@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class welcome extends AppCompatActivity  {
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     TextView signIn;
+    ImageButton btn_startWithEmailorPhone;
 
     private static final int RC_SIGN_IN = 123; // Use a unique request code
     private static final String TAG = "SignInActivity";
@@ -40,6 +42,15 @@ public class welcome extends AppCompatActivity  {
 
         btn_google = findViewById(R.id.btn_google);
         btn_facebook = findViewById(R.id.btn_facebook);
+        btn_startWithEmailorPhone = findViewById(R.id.btn_startWithEmailorPhone);
+
+        btn_startWithEmailorPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(welcome.this, signup.class);
+                startActivity(intent);
+            }
+        });
 
         signInClient = Identity.getSignInClient(this);
 
