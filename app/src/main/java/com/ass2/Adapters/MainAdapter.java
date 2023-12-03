@@ -2,6 +2,7 @@ package com.ass2.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ass2.Helper.CartDBHelper;
 import com.ass2.Helper.DBHelper;
+import com.ass2.Models.CartModel;
 import com.ass2.Models.MainModel;
+import com.ass2.project_smd.DashboardFragment;
 import com.ass2.project_smd.R;
 import com.ass2.project_smd.cart;
 import com.ass2.project_smd.create_your_own_pizza;
@@ -24,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_LAYOUT_1 = 0;
@@ -34,15 +39,22 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final DBHelper helper; // Remove the initialization here
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
-    public MainAdapter(ArrayList<MainModel> list, Context context) {
+
+    private CartUpdateListener cartUpdateListener;
+
+    public MainAdapter(ArrayList<MainModel> list, Context context, CartUpdateListener listener){
         this.list = list;
         this.context = context;
-        this.helper = new DBHelper(context); // Initialize DBHelper using the provided context
+        this.helper = new DBHelper(context);
+        this.cartUpdateListener = listener;
     }
 
     @Override
     public int getItemViewType(int position) {
         return (position == 0) ? VIEW_TYPE_LAYOUT_1 : VIEW_TYPE_LAYOUT_2;
+    }
+    public interface CartUpdateListener {
+        void onCartUpdated();
     }
 
     @NonNull
@@ -86,35 +98,31 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((Layout2ViewHolder) holder).pizzaDescription.setText(model.getDescription());
 
             if (model.getViewType() == VIEW_TYPE_LAYOUT_2) {
+                String price = model.getPrice();
+                int img = model.getPizzaImage();
+                String name = model.getName();
+                String description = model.getDescription();
+
                 ((Layout2ViewHolder) holder).addButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Handle button click for card_item_layout_2.xml here
-                        // You can perform actions like starting a new activity
-                        boolean isInserted = helper.insertOrder(
-                                model.getName(),
-                                "abc@gmail.com",
-                                model.getPrice(),
-                                model.getPizzaImage(),
-                                model.getDescription(),
-                                model.getName(),
-                                1
-                        );
+                        //Add item to the DB
+
+
+
+                        boolean isInserted = addSimpleItemToLocalDB(name,price,description,1,img);
                         if(isInserted){
-                            Toast.makeText(context, "Data Inserted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
+                            if (cartUpdateListener != null) {
+                                cartUpdateListener.onCartUpdated();
+                            }
                         }
+
                         else{
-                            Toast.makeText(context, "Data Not Inserted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Failed To add", Toast.LENGTH_SHORT).show();
                         }
 
 
-                        Intent intent = new Intent(context, cart.class);
-//                        intent.putExtra("pizzaName",model.getName());
-//                        intent.putExtra("pizzaImage",model.getPizzaImage());
-//                        intent.putExtra("pizzaPrice",model.getPrice());
-//                        intent.putExtra("pizzaDescription",model.getDescription());
-
-                        context.startActivity(intent);
                     }
                 });
             }
@@ -124,6 +132,31 @@ public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    private boolean addSimpleItemToLocalDB( String name,String price,
+                                            String description, int quantity,int image){
+
+        CartModel newCartItem = new CartModel(
+                quantity,
+                name,
+                price,
+                description,
+                image,
+                1 );
+
+        // Add the item to the database
+        CartDBHelper dbHelper = new CartDBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long insertSuccess = dbHelper.insertCartItem(newCartItem);
+
+        db.close(); // Close the database connection
+        if(insertSuccess == -1)
+            return false;
+        else
+            return true;
+
+
     }
 
     // ViewHolder for layout 1

@@ -27,6 +27,7 @@ import com.ass2.Drawer.DrawerAdapter;
 import com.ass2.Drawer.DrawerItem;
 import com.ass2.Drawer.SimpleItem;
 import com.ass2.Drawer.SpaceItem;
+import com.ass2.Helper.CartDBHelper;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -219,7 +220,7 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
             SettingsFragment settingsFragment = new SettingsFragment();
             transaction.replace(R.id.container, settingsFragment);
         }
-        else if(position == 8){
+        else if(position == 8){//POS_LOGOUT
             signOut();
             nagivateToSignInActivity();
         }
@@ -261,7 +262,13 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         } else {
         }
     }
+
     private void signOut() {
+        // Clear cart data
+        CartDBHelper dbHelper = new CartDBHelper(this);
+        dbHelper.clearCart();
+
+        // Sign out from Google
         gsc.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
                     @Override
@@ -270,6 +277,7 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
                     }
                 });
     }
+
     void nagivateToSignInActivity() {
         Intent intent = new Intent(this, welcome.class);
         startActivity(intent);

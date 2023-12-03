@@ -130,7 +130,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (count > 1) {
                         count--;
                         double newPrice = calculateNewPrice(item, count);
-                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemPrice.setText(String.format("£%.2f", newPrice));
                         itemCount.setText(String.valueOf(count));
                         item.setItemPrice(String.valueOf(newPrice));
                         item.setItemCount(count);
@@ -155,7 +155,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         // Access list and notifyItemRemoved through the adapter instance
                         adapter.removeItem(adapterPosition);
+                        adapter.updateSubtotal();
                     }
+
                 }
             });
 
@@ -166,7 +168,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if(count<4) { //Restrict to 3
                         count++;
                         double newPrice = calculateNewPrice(item, count);
-                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemPrice.setText(String.format("£%.2f", newPrice));
                         itemCount.setText(String.valueOf(count));
                         item.setItemPrice(String.valueOf(newPrice));
                         item.setItemCount(count);
@@ -185,15 +187,35 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemRemoved(position);
     }
     private static double calculateNewPrice(CartModel item, int newCount) {
-        double unitPrice = item.getUnitPrice(item.getItemSize(), item.getItemCrust());
+        double unitPrice = -1.0f;
+        if(item.getViewType() == VIEW_TYPE_LAYOUT_1){
+            unitPrice = item.getUnitPrice(item.getItemSize(), item.getItemCrust());
+        }
+        else if(item.getViewType() == VIEW_TYPE_LAYOUT_2){
+            String unitPriceString = item.getItemPrice();
+            unitPrice = parseUnitPrice(unitPriceString);
+        }
         return unitPrice * newCount;
     }
+
     private static void updateItemInDB(CartModel item) {
         CartDBHelper dbHelper = new CartDBHelper(context);
         boolean updateSuccess = dbHelper.updateCartItem(item);
         Log.d("CartAdapterDebug", "Update success: " + updateSuccess);
     }
+    private static double parseUnitPrice(String unitPriceString) {
+        // Remove the currency symbol and any non-numeric characters
+        String cleanedPriceString = unitPriceString.replaceAll("[^0-9.]", "");
 
+        // Parse the cleaned string as a double
+        try {
+            return Double.parseDouble(cleanedPriceString);
+        } catch (NumberFormatException e) {
+            // Handle any parsing errors here
+            e.printStackTrace();
+            return 0.0; // Return a default value or handle the error as needed
+        }
+    }
 
     private static void updateItemCountInDB(CartModel item, int newCount) {
         // Update item count in the database
@@ -284,7 +306,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (count > 1) {
                         count--;
                         double newPrice = calculateNewPrice(item, count);
-                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemPrice.setText(String.format("£%.2f", newPrice));
                         itemCountT.setText(String.valueOf(count));
                         item.setItemPrice(String.valueOf(newPrice));
                         item.setItemCount(count);
@@ -311,7 +333,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if(count<4){
                         count++;
                         double newPrice = calculateNewPrice(item, count);
-                        itemPrice.setText(String.format("%.2f", newPrice));
+                        itemPrice.setText(String.format("£%.2f", newPrice));
                         itemCountT.setText(String.valueOf(count));
                         item.setItemPrice(String.valueOf(newPrice));
                         item.setItemCount(count);
@@ -330,6 +352,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         // Access list and notifyItemRemoved through the adapter instance
                         adapter.removeItem(adapterPosition);
+                        adapter.updateSubtotal();
                     }
                 }
             });

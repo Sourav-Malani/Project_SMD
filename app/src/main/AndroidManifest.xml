@@ -50,9 +50,7 @@
             android:name=".Login"
             android:exported="false"
             android:theme="@style/Theme.Project_SMD.NoActionBar" />
-        <activity
-            android:name=".homescreen"
-            android:exported="false" />
+
         <activity
             android:name=".signup"
             android:exported="false" />
@@ -60,13 +58,13 @@
             android:name=".welcome"
             android:exported="false" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".nav_bar"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".nav_bar"
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -188,7 +188,9 @@ public class CartDBHelper extends SQLiteOpenHelper {
             int columnIndexItemQuantity = cursor.getColumnIndex(COLUM_ITEM_QUANTITY);
 
             while (cursor.moveToNext()) {
-                double unitPrice = cursor.getDouble(columnIndexItemPrice);
+                String unitPriceString = cursor.getString(columnIndexItemPrice);
+                double unitPrice = parseUnitPrice(unitPriceString);
+
                 int quantity = cursor.getInt(columnIndexItemQuantity);
                 subtotal += unitPrice * quantity;
 
@@ -200,7 +202,19 @@ public class CartDBHelper extends SQLiteOpenHelper {
         db.close();
         return subtotal;
     }
+    private double parseUnitPrice(String unitPriceString) {
+        // Remove the currency symbol and any non-numeric characters
+        String cleanedPriceString = unitPriceString.replaceAll("[^0-9.]", "");
 
+        // Parse the cleaned string as a double
+        try {
+            return Double.parseDouble(cleanedPriceString);
+        } catch (NumberFormatException e) {
+            // Handle any parsing errors here
+            e.printStackTrace();
+            return 0.0; // Return a default value or handle the error as needed
+        }
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Handle database upgrades
@@ -321,6 +335,37 @@ public class CartDBHelper extends SQLiteOpenHelper {
             list.add(item);
         }
         return list;
+    }
+
+    public int getItemCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int totalCount = 0;
+
+        Cursor cursor = db.query(
+                TABLE_CART,
+                new String[]{COLUM_ITEM_QUANTITY}, // Select only the quantity column
+                null, null, null, null, null
+        );
+
+        if (cursor != null) {
+            int quantityIndex = cursor.getColumnIndex(COLUM_ITEM_QUANTITY);
+            if (quantityIndex != -1) { // Check if the column exists
+                while (cursor.moveToNext()) {
+                    int quantity = cursor.getInt(quantityIndex);
+                    totalCount += quantity;
+                }
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return totalCount;
+    }
+    public void clearCart() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CART, null, null);
+        db.close();
+
     }
 
 

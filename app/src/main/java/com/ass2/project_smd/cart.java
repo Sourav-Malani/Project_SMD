@@ -68,17 +68,18 @@ public class cart extends AppCompatActivity  {
     private void setupRecyclerViewViaLocalDB() {
         CartDBHelper dbHelper = new CartDBHelper(this);
         ArrayList<CartModel> cartItems = dbHelper.getAllCartItems();
-        updateCartVisibility(cartItems.size());
         CartAdapter adapter = new CartAdapter(cartItems, this, subtotal);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         cartRecyclerView.setAdapter(adapter);
+
+        updateCartVisibility(cartItems.size()); // Update cart visibility based on the number of items
     }
+
 
 
     private void updateSubtotal() {
         CartDBHelper dbHelper = new CartDBHelper(this);
         ArrayList<CartModel> cartItems = dbHelper.getAllCartItems();
-
         float subtotalValue = (float) dbHelper.calculateSubtotal();
         subtotal.setText(String.valueOf(subtotalValue));
     }

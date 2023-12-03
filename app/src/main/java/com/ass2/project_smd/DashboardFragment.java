@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ass2.Adapters.MainAdapter;
+import com.ass2.Helper.CartDBHelper;
 import com.ass2.Models.MainModel;
 import com.ass2.project_smd.databinding.DashboardFragmentBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,8 +29,9 @@ import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements MainAdapter.CartUpdateListener  {
 
     private static final int RC_SIGN_IN = 123; // Use a unique request code
     private static final String TAG = "SignInActivity";
@@ -38,15 +40,34 @@ public class DashboardFragment extends Fragment {
     RecyclerView recyclerViewCards;
     TextView address;
     ImageView profilePic;
+    TextView floating_count_text,floating_subtotal_text;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
     View rectangle_floating_pizza;
     private DashboardListener dashboardListener;
     @Override
+    public void onCartUpdated() {
+        updateCartUI();
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DashboardFragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
+    public void updateCartUI() {
+        CartDBHelper dbHelper = new CartDBHelper(getContext());
+        double subtotal = dbHelper.calculateSubtotal();
+        int itemCount = dbHelper.getItemCount(); // You need to implement getItemCount method in CartDBHelper
+
+        floating_subtotal_text.setText(String.format(Locale.getDefault(), "£%.2f", subtotal));
+        floating_count_text.setText(String.valueOf(itemCount));
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCartUI(); // Call your method to update UI
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -56,6 +77,9 @@ public class DashboardFragment extends Fragment {
         address = view.findViewById(R.id.address);
         profilePic = view.findViewById(R.id.profile_image);
         rectangle_floating_pizza = view.findViewById(R.id.rectangle_floating_pizza);
+        floating_count_text = view.findViewById(R.id.floating_count_text);
+        floating_subtotal_text = view.findViewById(R.id.floating_subtotal_text);
+
         ImageView vectorImageView = view.findViewById(R.id.vectorImageView);
 
         vectorImageView.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +103,7 @@ public class DashboardFragment extends Fragment {
         list.add(new MainModel(
                 R.drawable.pizza2,
                 "Fresh Farm House",
-                "Rs 1400",
+                "£14.25",
                 "crisp capsicum, succulent mushrooms and fresh tomatoes",
                 "pizza",
                 2,
@@ -87,7 +111,7 @@ public class DashboardFragment extends Fragment {
         list.add(new MainModel(
                 R.drawable.pizza3,
                 "Peppy Paneer",
-                "Rs. 5900",
+                "£16.75",
                 "Chunky paneer with crisp capsicum and spicy red pepperr",
                 "pizza",
                 3,
@@ -95,7 +119,7 @@ public class DashboardFragment extends Fragment {
         list.add(new MainModel(
                 R.drawable.pizza4,
                 "Mexican Green Wave",
-                "Rs. 1400",
+                "£20.00",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
                 4,
@@ -103,7 +127,7 @@ public class DashboardFragment extends Fragment {
         list.add(new MainModel(
                 R.drawable.pizza5,
                 "Peppy Paneer",
-                "$ 15",
+                "£16.75",
                 "Chunky paneer with crisp capsicum and spicy red pepper",
                 "pizza",
                 5,
@@ -111,36 +135,37 @@ public class DashboardFragment extends Fragment {
         list.add(new MainModel(
                 R.drawable.pizza6,
                 "Mexican Green Wave",
-                "Rs 1700",
+                "£20.00",
                 "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
                 "pizza",
                 6,
                 1));
         list.add(new MainModel(
-                R.drawable.pizza6,
-                "Mexican Green Wave",
-                "Rs 1700",
-                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                R.drawable.veg_extravaganz,
+                "Veg Extravaganza",
+                "£10.00",
+                "Black olives, capsicum, onion, grilled mushroom, corn, tomato, jalapeno & extra cheese",
                 "pizza",
                 7,
                 1));
         list.add(new MainModel(
-                R.drawable.pizza6,
-                "Mexican Green Wave",
-                "Rs 1700",
-                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                R.drawable.margherita,
+                "Margherita",
+                "£16.00",
+                "A hugely popular margherita, with a deliciously tangy single cheese topping",
                 "pizza",
                 8,
                 1));
         list.add(new MainModel(
-                R.drawable.pizza6,
-                "Mexican Green Wave",
-                "Rs 1700",
-                "A pizza loaded with crunchy onions, crisp capsicum, juicy tomatoes",
+                R.drawable.veggie_paradise,
+                "Veggie Paradise",
+                "£14.75",
+                "oldern Corn, Black Olives, Capsicum & Red Paprika",
                 "pizza",
                 9,
                 1));
-        MainAdapter adapter = new MainAdapter(list, requireActivity());
+
+        MainAdapter adapter = new MainAdapter(list, requireActivity(), this);
         recyclerViewCards.setAdapter(adapter);
 
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2); // 2 columns

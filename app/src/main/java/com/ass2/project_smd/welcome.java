@@ -79,7 +79,7 @@ public class welcome extends AppCompatActivity  {
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn(); // Call your sign-in method when the Google button is clicked
+                signInWithGoogle(); // Call your sign-in method when the Google button is clicked
             }
         });
     }
@@ -109,7 +109,7 @@ public class welcome extends AppCompatActivity  {
     }
 
     // Modified Google Sign-In code
-    private void signIn() {
+    private void signInWithGoogle() {
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

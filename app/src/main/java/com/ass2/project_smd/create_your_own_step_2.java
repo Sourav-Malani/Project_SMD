@@ -61,7 +61,7 @@ public class create_your_own_step_2 extends AppCompatActivity {
 
 
         double price = calculateCYOPizzaPrice();
-        txt_cartPrice.setText("$"+totalPizzaPrice  );
+        txt_cartPrice.setText(String.format(Locale.getDefault(), "£%.2f", price)  );
 
 
 
@@ -152,12 +152,10 @@ public class create_your_own_step_2 extends AppCompatActivity {
                         1,R.drawable.pizza4);
                 if(dbSuccess){
                     Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
-                    //navigate to the DashBoardFragment
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    //navigate to the nav_bar
+                    Intent intent = new Intent(this, nav_bar.class);
+                    startActivity(intent);
 
-                    fragmentTransaction.replace(R.id.DashboardFragment, new DashboardFragment());
-                    fragmentTransaction.commit();
 
                     //passTheIntentDate();
                 }
