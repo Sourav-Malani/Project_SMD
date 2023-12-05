@@ -1,34 +1,37 @@
 package com.ass2.project_smd;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.concurrent.futures.AbstractResolvableFuture;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.ass2.Helper.UserDBHelper;
+import com.ass2.HttpService.ApiCallback;
+import com.ass2.HttpService.ApiHelper;
+import com.ass2.HttpService.HttpService;
+import com.ass2.HttpService.RetrofitBuilder;
+import com.ass2.HttpService.UserProfileModel;
 import com.ass2.Models.UserModel;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.ass2.config.Config;
+import com.ass2.project_smd.R;
 
-import java.util.HashMap;
-import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class signup extends AppCompatActivity {
-    private UserDBHelper dbHelper;
+
+    private ApiHelper apiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        dbHelper = new UserDBHelper(this);
+        // Initialize ApiHelper with the base URL of your API
+        HttpService httpService = RetrofitBuilder.getClient(Config.API_BASE_URL).create(HttpService.class);
+        apiHelper = new ApiHelper(httpService, this);
 
         Button signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -38,52 +41,30 @@ public class signup extends AppCompatActivity {
                 String fullName = ((EditText) findViewById(R.id.usernameText)).getText().toString();
                 String email = ((EditText) findViewById(R.id.emailText)).getText().toString();
                 String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
-                String deliveryAddress = ""; // Get delivery address input
-                String phoneNo = ""; // Get phone number input
-                String imageURL = ""; // Get image URL input
 
                 // Create a new UserModel with signup information
-                UserModel user = new UserModel(fullName, email, password, deliveryAddress, phoneNo, imageURL);
+                UserModel user = new UserModel(fullName, email, password);
 
-                // Insert user data into the online database (MySQL and phpMyAdmin)
-                insertUserOnline(user);
+                // Register the user using the ApiHelper
+                registerUser(user);
             }
         });
     }
-    private void insertUserOnline(UserModel user) {
-        String url = "http://cheesybites.infinityfreeapp.com/insert.php"; // Replace with your InfinityFree website URL
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Handle the server response, e.g., show a success message
-                        Toast.makeText(signup.this, response, Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error, e.g., show an error message
-                        Toast.makeText(signup.this, "Signup failed"+error.toString(), Toast.LENGTH_SHORT).show();
-
-                    }
-                }) {
+    private void registerUser(UserModel user) {
+        // Call the registerUser method of the ApiHelper
+        apiHelper.registerUser(user.getFullName(), user.getEmail(), user.getPassword(), new ApiCallback<UserProfileModel>() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("fullName", user.getFullName());
-                params.put("email", user.getEmail());
-                params.put("password", user.getPassword());
-                params.put("deliveryAddress", user.getDeliveryAddress());
-                params.put("phoneNo", user.getPhoneNo());
-                params.put("imageURL", user.getImageURL());
-                return params;
+            public void onSuccess(UserProfileModel result) {
+                // Handle registration success, e.g., show a success message
+                Toast.makeText(signup.this, "Registration successful", Toast.LENGTH_SHORT).show();
             }
-        };
 
-        // Add the request to the Volley queue
-        Volley.newRequestQueue(this).add(stringRequest);
+            @Override
+            public void onError(String errorMessage) {
+                // Handle registration error, e.g., show an error message
+                Toast.makeText(signup.this, "Registration failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
-
