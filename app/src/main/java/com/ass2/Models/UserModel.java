@@ -12,6 +12,9 @@ public class UserModel {
 
     boolean LoggedIn;
 
+    private long localID; // Local SQLite database ID
+    private int onlineID; // Online MySQL database ID
+
     public UserModel(String fullName, String email, String password, String deliveryAddress, String phoneNo, String imageURL) {
         this.fullName = fullName;
         this.email = email;
@@ -21,11 +24,31 @@ public class UserModel {
         this.imageURL = imageURL;
         this.LoggedIn = false; // default
         this.setDateRegistered(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+        // Initialize local and online IDs
+        this.localID = -1; // Default value
+        this.onlineID = -1; // Default value
     }
 
     public UserModel() {
         this.LoggedIn = false; // default
         this.setDateRegistered(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+    }
+
+    // Getter and setter methods for local and online IDs
+    public long getLocalID() {
+        return localID;
+    }
+
+    public void setLocalID(long localID) {
+        this.localID = localID;
+    }
+
+    public int getOnlineID() {
+        return onlineID;
+    }
+
+    public void setOnlineID(int onlineID) {
+        this.onlineID = onlineID;
     }
 
     public String getFullName() {
