@@ -75,15 +75,18 @@
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/pfimg" />
+            android:src="@drawable/profile_image" />
 
         <ImageButton
             android:id="@+id/selectImageButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:background="@android:color/transparent"
-            android:src="@drawable/cam" />
+            android:src="@drawable/cam"
+            android:forceHasOverlappingRendering="true"
+
+            />
     </androidx.cardview.widget.CardView>
 
     <TextView

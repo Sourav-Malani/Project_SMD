@@ -172,6 +172,7 @@
             android:text="Already have an account? "/>
 
         <TextView
+            android:id="@+id/txt_loginRedirect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"

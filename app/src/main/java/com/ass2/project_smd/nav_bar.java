@@ -7,6 +7,7 @@ import static com.ass2.project_smd.R.*;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -48,20 +49,20 @@ import android.widget.Toast;
 
 public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSelectedListener, DashboardFragment.DashboardListener {
 
-  private static final int POS_MY_ORDERS = 0;
-  private static final int POS_MY_PROFILE = 1;
-  private static final int POS_DELIVERY_ADDRESS = 2;
-  private static final int POS_PAYMENT_METHODS = 3;
-  private static final int POS_CONTACT_US= 4;
-  private static final int POS_SETTINGS = 5;
-  private static final int POS_HELP = 6;
-  private static final int POS_LOGOUT = 7;
+    private static final int POS_MY_ORDERS = 0;
+    private static final int POS_MY_PROFILE = 1;
+    private static final int POS_DELIVERY_ADDRESS = 2;
+    private static final int POS_PAYMENT_METHODS = 3;
+    private static final int POS_CONTACT_US= 4;
+    private static final int POS_SETTINGS = 5;
+    private static final int POS_HELP = 6;
+    private static final int POS_LOGOUT = 7;
 
 
-  private String[] screenTitles;
-  private Drawable[] screenIcons;
+    private String[] screenTitles;
+    private Drawable[] screenIcons;
 
-  private SlidingRootNav  slidingRootNav;
+    private SlidingRootNav  slidingRootNav;
 
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
@@ -77,6 +78,7 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         //profilePic = findViewById(R.id.profile_image);
         //user_name = findViewById(R.id.user_name);
         //user_email = findViewById(R.id.user_email);
+        //ImageView vectorImageView = view.findViewById(R.id.vectorImageView);
 
         Toolbar toolbar = findViewById(id.toolbar);
         setSupportActionBar(toolbar);
@@ -130,11 +132,19 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         drawerUserEmail = slidingRootNav.getLayout().findViewById(id.user_email);
         drawerProfilePic = slidingRootNav.getLayout().findViewById(id.profile_image);
 
+        SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        String LOGIN_METHOD = sharedPrefs.getString("loginMethod", "");
+        Boolean isLogged = sharedPrefs.getBoolean("isLogged", false);
 
         // Now you can use the 'account' object as needed
-        if (recievedAccount != null) {
+        if (recievedAccount != null && LOGIN_METHOD.equals("google") && isLogged) {
             updateUI(recievedAccount);
         }
+        else if(LOGIN_METHOD.equals("email") && isLogged){
+            drawerUserName.setText(sharedPrefs.getString("name", ""));
+            drawerUserEmail.setText(sharedPrefs.getString("email", ""));
+        }
+
 
 
     }
@@ -159,11 +169,11 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
     private int color(@ColorRes int res) {
         return ContextCompat.getColor(this, res);
     }
-  private String[] loadScreenTitles() {
+    private String[] loadScreenTitles() {
         return getResources().getStringArray(R.array.id_activityScreenTitles);
-  }
+    }
 
-  private Drawable[] loadScreenIcons() {
+    private Drawable[] loadScreenIcons() {
         TypedArray ta = getResources().obtainTypedArray(R.array.id_activityScreenIcons);
         Drawable[] icons = new Drawable[ta.length()];
         for (int i = 0; i < ta.length(); i++){
@@ -174,7 +184,7 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         }
         ta.recycle();
         return icons;
-  }
+    }
 
     @Override
     public void onBackPressed() {
@@ -222,7 +232,6 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         }
         else if(position == 8){//POS_LOGOUT
             signOut();
-            nagivateToSignInActivity();
         }
         slidingRootNav.closeMenu();
         transaction.addToBackStack(null);
@@ -267,18 +276,17 @@ public class nav_bar extends AppCompatActivity implements DrawerAdapter.OnItemSe
         // Clear cart data
         CartDBHelper dbHelper = new CartDBHelper(this);
         dbHelper.clearCart();
+        nagivateToSignInActivity("null");
 
-        // Sign out from Google
-        gsc.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        nagivateToSignInActivity();
-                    }
-                });
     }
 
-    void nagivateToSignInActivity() {
+    void nagivateToSignInActivity(String signInMethod) {
+        SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("loginMethod", signInMethod);
+        editor.putBoolean("isLogged", false);
+        editor.apply();
+
         Intent intent = new Intent(this, welcome.class);
         startActivity(intent);
         finish();

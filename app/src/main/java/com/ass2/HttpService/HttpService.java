@@ -30,7 +30,10 @@ public interface HttpService {
     Call<UserProfileModel> callRegisterApi(
             @Part("name") RequestBody name,
             @Part("email") RequestBody email,
-            @Part("password") RequestBody password
+            @Part("password") RequestBody password,
+            @Part("delivery_address") RequestBody delivery_address,
+            @Part("PhNo") RequestBody PhNo,
+            @Part("imgURL") RequestBody imgURL
 
 
     );

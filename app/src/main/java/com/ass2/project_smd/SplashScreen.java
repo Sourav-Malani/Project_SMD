@@ -28,9 +28,10 @@ public class SplashScreen  extends AppCompatActivity {
                     // Check if the user is logged in already.
                     SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
                     boolean isLogged = sharedPrefs.getBoolean("isLogged", false);
+                    String loginMethod = sharedPrefs.getString("loginMethod", "");
 
                     Intent intent = null;
-                    if (isLogged) { // If the user is logged in already.
+                    if (isLogged && loginMethod.equals("google")) { // If the user is logged in already.
                         final String[] userEmail = {""}; // Final variable to store email
 
                         UserDatabaseHelper userDatabaseHelper = new UserDatabaseHelper();
@@ -49,7 +50,12 @@ public class SplashScreen  extends AppCompatActivity {
                         // Start the new activity inside this callback
                         intent = new Intent(SplashScreen.this, nav_bar.class);
                         intent.putExtra("userEmail", userEmail[0]);
-                    } else { // If the user is not logged in.
+                    }
+                    else if(loginMethod.equals("email")){
+                        intent = new Intent(SplashScreen.this, nav_bar.class);
+
+                    }
+                    else { // If the user is not logged in.
                         intent = new Intent(SplashScreen.this, welcome.class);
                     }
 

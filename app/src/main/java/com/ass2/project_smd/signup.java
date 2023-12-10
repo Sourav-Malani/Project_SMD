@@ -1,9 +1,12 @@
 package com.ass2.project_smd;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,24 +19,38 @@ import com.ass2.Models.UserModel;
 import com.ass2.config.Config;
 import com.ass2.project_smd.R;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class signup extends AppCompatActivity {
 
-    private ApiHelper apiHelper;
-
+    TextView loginRedirectText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        // Initialize ApiHelper with the base URL of your API
-        HttpService httpService = RetrofitBuilder.getClient(Config.API_BASE_URL).create(HttpService.class);
-        apiHelper = new ApiHelper(httpService, this);
-
         Button signUpButton = findViewById(R.id.signUpButton);
+        loginRedirectText = findViewById(R.id.txt_loginRedirect);
+        loginRedirectText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToLogin();
+            }
+        });
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,28 +60,110 @@ public class signup extends AppCompatActivity {
                 String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
 
                 // Create a new UserModel with signup information
-                UserModel user = new UserModel(fullName, email, password);
 
+                // Get user input from EditText fields
+                String deliveryAddress = "addr"; // Get delivery address input
+                String phoneNo = "phn"; // Get phone number input
+                String imageURL = "imgURL"; // Get image URL input
+
+                // Create a new UserModel with signup information
+                //UserProfileModel user = new UserProfileModel(fullName, email, password, "addr", "phn", "imgURL");
+                registerUser(fullName, email, password);
                 // Register the user using the ApiHelper
-                registerUser(user);
             }
         });
     }
 
-    private void registerUser(UserModel user) {
-        // Call the registerUser method of the ApiHelper
-        apiHelper.registerUser(user.getFullName(), user.getEmail(), user.getPassword(), new ApiCallback<UserProfileModel>() {
-            @Override
-            public void onSuccess(UserProfileModel result) {
-                // Handle registration success, e.g., show a success message
-                Toast.makeText(signup.this, "Registration successful", Toast.LENGTH_SHORT).show();
-            }
+    private void registerUser(String fullname, String email, String password) {
+        // Prepare data for sending
+        HashMap<String, String> postDataParams = new HashMap<>();
+        postDataParams.put("full_name", fullname);
+        postDataParams.put("email", email);
+        postDataParams.put("pass", password);
+//        postDataParams.put("address", address);
+//        postDataParams.put("phone_no", phno);
+//        postDataParams.put("image_url", imageURL);
 
+        // Send data to server
+        new Thread(new Runnable() {
             @Override
-            public void onError(String errorMessage) {
-                // Handle registration error, e.g., show an error message
-                Toast.makeText(signup.this, "Registration failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+            public void run() {
+                try {
+                    //URL url = new URL("http://192.168.18.114/Ass02API/register.php"); // Use your IP and path
+                    URL url = new URL(Config.API_BASE_URL + "register.php");
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setDoOutput(true);
+
+                    OutputStream os = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(getPostDataString(postDataParams));
+                    writer.flush();
+                    writer.close();
+                    os.close();
+
+                    int responseCode = conn.getResponseCode();
+                    Log.d("SignupActivity", "Response Code: " + responseCode);
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuffer sb = new StringBuffer("");
+                        String line;
+
+                        while ((line = in.readLine()) != null) {
+                            sb.append(line);
+                            break;
+                        }
+
+                        in.close();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(signup.this, sb.toString(), Toast.LENGTH_LONG).show();
+                                if (sb.toString().contains("successfully")) {
+                                    navigateToLogin();
+                                }
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(signup.this, "Failed to register", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("SignupActivity", "Exception: " + e.getMessage());
+                }
             }
-        });
+        }).start();
     }
+
+    private String getPostDataString(HashMap<String, String> params) throws Exception {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(signup.this, Login.class);
+        startActivity(intent);
+    }
+
+
 }

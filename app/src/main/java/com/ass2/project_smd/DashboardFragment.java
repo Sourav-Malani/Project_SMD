@@ -1,6 +1,7 @@
 package com.ass2.project_smd;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
-
+import androidx.appcompat.widget.Toolbar;
 public class DashboardFragment extends Fragment implements MainAdapter.CartUpdateListener  {
 
     private static final int RC_SIGN_IN = 123; // Use a unique request code
@@ -171,13 +172,26 @@ public class DashboardFragment extends Fragment implements MainAdapter.CartUpdat
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2); // 2 columns
         recyclerViewCards.setLayoutManager(layoutManager);
 
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(requireContext(), gso);
 
-        Intent intent = requireActivity().getIntent();
-        GoogleSignInAccount receivedAccount = intent.getParcelableExtra("googleSignInAccount");
-        if (receivedAccount != null) {
-            updateUI(receivedAccount);
+        SharedPreferences sharedPrefs = requireContext().getSharedPreferences("userPrefs", requireContext().MODE_PRIVATE);
+        String loginMethod = sharedPrefs.getString("loginMethod", "");
+        String addr = sharedPrefs.getString("delivery_address", "");
+
+        if (loginMethod.equals("google")) {
+            gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+            gsc = GoogleSignIn.getClient(requireContext(), gso);
+
+            Intent intent = requireActivity().getIntent();
+            GoogleSignInAccount receivedAccount = intent.getParcelableExtra("googleSignInAccount");
+            if(receivedAccount != null)
+                updateUI(receivedAccount);
+        }
+        else if(loginMethod.equals("email")){
+            address.setText(addr);
+
+        }
+        else {
+            address.setText("Please Login");
         }
         rectangle_floating_pizza.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,8 +212,13 @@ public class DashboardFragment extends Fragment implements MainAdapter.CartUpdat
         // [START on_start_sign_in]
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
-        updateUI(account);
+        SharedPreferences sharedPrefs = requireContext().getSharedPreferences("userPrefs", requireContext().MODE_PRIVATE);
+        String loginMethod = sharedPrefs.getString("loginMethod", "");
+
+        if(loginMethod.equals("google")){
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+            updateUI(account);
+        }
         // [END on_start_sign_in]
     }
     // [START onActivityResult]

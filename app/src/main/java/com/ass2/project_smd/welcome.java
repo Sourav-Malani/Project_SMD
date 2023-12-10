@@ -3,8 +3,10 @@ package com.ass2.project_smd;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +26,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class welcome extends AppCompatActivity  {
+public class welcome extends AppCompatActivity {
     Button btn_facebook, btn_google;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
@@ -52,29 +54,15 @@ public class welcome extends AppCompatActivity  {
             }
         });
 
-        signInClient = Identity.getSignInClient(this);
-
         signIn = findViewById(R.id.sign_in);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //signInWithApp(); // Call your sign-in method when the button is clicked
+                // Navigate to the login page
+                Intent intent = new Intent(welcome.this, Login.class);
+                startActivity(intent);
             }
         });
-
-        // [START configure_signin]
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        // [END configure_signin]
-
-        // [START build_client]
-        // Build a GoogleSignInClient with the options specified by gso.
-        gsc = GoogleSignIn.getClient(this, gso);
-        // [END build_client]
-
 
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,46 +72,73 @@ public class welcome extends AppCompatActivity  {
         });
     }
 
-    // Your existing code for navigation
-    void navigateToNextActivity(GoogleSignInAccount account) {
-        Intent intent = new Intent(this, nav_bar.class);
-        intent.putExtra("googleSignInAccount", account); // Pass the GoogleSignInAccount
-        startActivity(intent);
-    }
     @Override
     public void onStart() {
         super.onStart();
-
-        // [START on_start_sign_in]
-        // Check for existing Google Sign In account, if the user is already signed in
+        // Check for existing Google Sign-In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
-        // [END on_start_sign_in]
+        if (account != null) {
+            // If the user is already signed in, navigate to the next activity
+            navigateToNavBarActivity("google");
+        }
     }
 
-    void nagivateToSignInActivity() {
-        Intent intent = new Intent(this, Login.class);
-        startActivity(intent);
-        finish();
+    // Your existing code for navigation
+    void navigateToNavBarActivity(String signInMethod) {
+        SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("loginMethod", signInMethod);
+        editor.apply();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        DashboardFragment dashboardFragment = new DashboardFragment();
+
+
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        boolean isLogged = sharedPrefs.getBoolean("isLogged", false);
+        if(isLogged){
+            Intent intent = new Intent(this, nav_bar.class);
+            startActivity(intent);
+            finish();
+        }
+
+
+    }
+
 
     // Modified Google Sign-In code
     private void signInWithGoogle() {
+        signInClient = Identity.getSignInClient(this);
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
+
         Intent signInIntent = gsc.getSignInIntent();
+        signInIntent.putExtra("loginMethod", "google");
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+
+        SharedPreferences sharedPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("loginMethod", "google");
+        editor.putBoolean("isLogged", true);
+        editor.apply();
     }
 
 
-    private void signOut() {
-        gsc.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        nagivateToSignInActivity();
-                    }
-                });
-    }
+
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -135,24 +150,22 @@ public class welcome extends AppCompatActivity  {
         }
     }
 
+
+
+
+
+
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            updateUI(account);
+            if (account != null) {
+                // Successfully signed in with Google, navigate to the next activity
+                navigateToNavBarActivity("google");
+            }
         } catch (ApiException e) {
             Log.w("GoogleSignIn", "signInResult:failed code=" + e.getStatusCode());
+            // Handle sign-in failure, e.g., show an error message
             //Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void updateUI(@Nullable GoogleSignInAccount account) {
-        if (account != null) {
-            Toast.makeText(this, "Sign-in successful", Toast.LENGTH_SHORT).show();
-            Log.w("GoogleSignIn", "signInResult:Name=" + account.getDisplayName());
-            navigateToNextActivity(account);
-        } else {
-            //Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 }
